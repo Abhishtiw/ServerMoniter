@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -24,6 +25,7 @@ import com.est.entity.ApplicationStatusReport;
 import com.est.entity.Email;
 import com.est.entity.User;
 import com.est.service.ApplicationService;
+import com.est.service.MonitorService;
 import com.est.util.ErrorCode;
 import com.est.util.ServerMonitorException;
 
@@ -41,12 +43,23 @@ public class ApplicationController {
 	@Autowired
 	private ApplicationService appService;
 	
+	@Autowired
+	private MonitorService monitorService;
+	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	    sdf.setLenient(true);
 	    binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
 	}
+	
+	
+	 @Scheduled(fixedDelay=10000)
+		public void doTask(){
+			monitorService.compareApplicationStatus();
+			System.out.println("mail sending");
+		}
+	
 	
 
 	/**
