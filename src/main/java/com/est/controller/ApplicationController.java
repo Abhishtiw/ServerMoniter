@@ -40,12 +40,12 @@ public class ApplicationController {
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	/*@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Model model) {
-		logger.info("------------------------start executing home method---------------- ");
-		model.addAttribute("message", "Welcome Home !");
-		return "home";
-	}*/
+	/*
+	 * @RequestMapping(value = "/", method = RequestMethod.GET) public String
+	 * home(Model model) { logger.
+	 * info("------------------------start executing home method---------------- "
+	 * ); model.addAttribute("message", "Welcome Home !"); return "home"; }
+	 */
 
 	/**
 	 * To redirect to corresponding view based on the URL
@@ -59,7 +59,7 @@ public class ApplicationController {
 		if (url.equals("addApplication")) {
 			return "add_application";
 		} else if (url.equals("addUser")) {
-			return "register_user";
+			return "registerUser";
 		} else if (url.equals("addPriority")) {
 			return "add_priority";
 		} else if (url.equals("addStatusReport")) {
@@ -68,7 +68,7 @@ public class ApplicationController {
 			return "add_email";
 		}
 		return "errorPage";
-		
+
 	}
 
 	/**
@@ -84,7 +84,8 @@ public class ApplicationController {
 		if (result) {
 			return "redirect:displayApplication";
 		}
-		return "errorPage";
+		// return "errorPage";
+		throw new ServerMonitorException(ErrorCode.ADD_APPLICATION_FAIL);
 	}
 
 	/**
@@ -98,9 +99,10 @@ public class ApplicationController {
 	public String saveUser(@ModelAttribute("user") User user, ModelMap model) {
 		result = appService.addEntity(user);
 		if (result) {
-			return "saveapp";
+			return "redirect:displayUser";
 		} else {
-			return "errorPage";
+			// return "errorPage";
+			throw new ServerMonitorException(ErrorCode.ADD_USER_FAIL);
 		}
 	}
 
@@ -117,7 +119,8 @@ public class ApplicationController {
 		if (result) {
 			return "saveapp";
 		} else {
-			return "errorPage";
+			// return "errorPage";
+			throw new ServerMonitorException(ErrorCode.ADD_STATUS_FAIL);
 		}
 	}
 
@@ -135,7 +138,8 @@ public class ApplicationController {
 		if (result) {
 			return "saveapp";
 		} else {
-			return "errorPage";
+			// return "errorPage";
+			throw new ServerMonitorException(ErrorCode.ADD_REPORT_FAIL);
 		}
 	}
 
@@ -152,7 +156,8 @@ public class ApplicationController {
 		if (result) {
 			return "saveapp";
 		} else {
-			return "errorPage";
+			// return "errorPage";
+			throw new ServerMonitorException(ErrorCode.ADD_EMAIL_FAIL);
 		}
 	}
 
@@ -166,8 +171,11 @@ public class ApplicationController {
 	@RequestMapping(value = "editApp")
 	public String editApp(@RequestParam int appId, ModelMap model) {
 		Application application = (Application) appService.getEntityByID(Application.class, appId);
+		if (application == null) {
+			throw new ServerMonitorException(ErrorCode.UPDATE_ENTITY_FAIL);
+		}
 		model.addAttribute("application", application);
-		return "edit_application";
+		return "editApplication";
 	}
 
 	/**
@@ -183,7 +191,9 @@ public class ApplicationController {
 		if (result) {
 			return "redirect:displayApplication";
 		} else {
-			return "errorPage";
+			// return "errorPage";
+			throw new ServerMonitorException(ErrorCode.UPDATE_ENTITY_FAIL);
+
 		}
 	}
 
@@ -214,7 +224,8 @@ public class ApplicationController {
 		if (result) {
 			return "redirect:displayApplication";
 		} else {
-			return "errorPage";
+			//return "errorPage";
+			throw new ServerMonitorException(ErrorCode.DELETE_APPLICATION_FAIL);
 		}
 	}
 
@@ -229,9 +240,10 @@ public class ApplicationController {
 	public String deleteUser(@RequestParam int userId, ModelMap model) {
 		result = appService.deleteEntity(User.class, userId);
 		if (result) {
-			return "saveapp";
+			return "redirect:displayUser";
 		} else {
-			return "errorPage";
+			// return "errorPage";
+			throw new ServerMonitorException(ErrorCode.DELETE_USER_FAIL);
 		}
 	}
 
@@ -244,7 +256,7 @@ public class ApplicationController {
 	@RequestMapping(value = "displayApplication")
 	public String displayApp(ModelMap modelMap) {
 		List<ApplicationEntity> application = appService.getEntityList(Application.class);
-		if(application==null){
+		if (application == null) {
 			throw new ServerMonitorException(ErrorCode.DISPLAY_ENTITY_ERROR);
 		}
 		modelMap.addAttribute("applicationList", application);
@@ -260,6 +272,9 @@ public class ApplicationController {
 	@RequestMapping(value = "displayUser")
 	public String displayUser(ModelMap modelMap) {
 		List<ApplicationEntity> user = appService.getEntityList(User.class);
+		if (user == null) {
+			throw new ServerMonitorException(ErrorCode.DISPLAY_ENTITY_ERROR);
+		}
 		modelMap.addAttribute("user", user);
 		return "display_user";
 	}
