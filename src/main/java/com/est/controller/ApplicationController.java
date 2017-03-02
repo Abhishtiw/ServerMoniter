@@ -59,7 +59,7 @@ public class ApplicationController {
 		if (url.equals("addApplication")) {
 			return "add_application";
 		} else if (url.equals("addUser")) {
-			return "registerUser";
+			return "register_user";
 		} else if (url.equals("addPriority")) {
 			return "add_priority";
 		} else if (url.equals("addStatusReport")) {
@@ -167,7 +167,7 @@ public class ApplicationController {
 	public String editApp(@RequestParam int appId, ModelMap model) {
 		Application application = (Application) appService.getEntityByID(Application.class, appId);
 		model.addAttribute("application", application);
-		return "editApplication";
+		return "edit_application";
 	}
 
 	/**
