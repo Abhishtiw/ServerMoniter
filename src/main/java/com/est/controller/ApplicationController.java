@@ -70,7 +70,7 @@ public class ApplicationController {
 	 */
 	@RequestMapping(value = "{url}")
 	public String add(@PathVariable String url) {
-		logger.info("------------------------start executing add method---------------- ");
+		logger.info("------------------------start executing add  method---------------- ");
 		if (url.equals("addApplication")) {
 			return "add_application";
 		} else if (url.equals("addUser")) {
@@ -82,6 +82,7 @@ public class ApplicationController {
 		} else if (url.equals("addEmail")) {
 			return "add_email";
 		}
+		logger.info("------------------------execution completde of add application method---------------- ");
 		return "errorPage";
 
 	}
@@ -95,12 +96,15 @@ public class ApplicationController {
 	 */
 	@RequestMapping(value = "saveapplication", method = RequestMethod.POST)
 	public String saveApp(@ModelAttribute("application") Application application, ModelMap model) {
-		System.out.println(">>>>>>>>>>>>>>>>>saveapplication");
+		logger.info("------------------------start executing saveapplication method---------------- ");
 		result = appService.addEntity(application);
 		if (result) {
+			logger.info("------------------------execution completde of saveapplication  method---------------- ");
 			return "redirect:displayApplication";
 		}
+		
 		// return "errorPage";
+		logger.warn("-------------------saveapplication method fail------------------------ ");
 		throw new ServerMonitorException(ErrorCode.ADD_APPLICATION_FAIL);
 	}
 
@@ -113,13 +117,18 @@ public class ApplicationController {
 	 */
 	@RequestMapping(value = "saveUser", method = RequestMethod.POST)
 	public String saveUser(@ModelAttribute("user") User user, ModelMap model) {
+		logger.info("------------------------start executing saveuser method---------------- ");
 		result = appService.addEntity(user);
 		if (result) {
+			logger.info("------------------------execution completde of saveapplication  method---------------- ");
 			return "redirect:displayUser";
+			
 		} else {
+		logger.warn("-------------------saveuser method fail------------------------ ");
 			// return "errorPage";
 			throw new ServerMonitorException(ErrorCode.ADD_USER_FAIL);
 		}
+		
 	}
 
 	/**
@@ -131,11 +140,14 @@ public class ApplicationController {
 	 */
 	@RequestMapping(value = "saveAppStatus", method = RequestMethod.POST)
 	public String saveStatus(@ModelAttribute("appStatus") ApplicationStatus appStatus, ModelMap model) {
+		logger.info("------------------------start executing saveStatus method---------------- ");
 		result = appService.addEntity(appStatus);
 		if (result) {
+			logger.info("------------------------execution completde of saveStatus  method---------------- ");
 			return "saveapp";
 		} else {
 			// return "errorPage";
+			logger.warn("-------------------saveStatus method fail------------------------ ");
 			throw new ServerMonitorException(ErrorCode.ADD_STATUS_FAIL);
 		}
 	}
@@ -150,11 +162,14 @@ public class ApplicationController {
 	@RequestMapping(value = "saveAppStatusReport", method = RequestMethod.POST)
 	public String saveStatusReport(@ModelAttribute("appStatusReport") ApplicationStatusReport appStatusReport,
 			ModelMap model) {
+		logger.info("------------------------start executing saveStatusReport method---------------- ");
 		result = appService.addEntity(appStatusReport);
 		if (result) {
+			logger.info("------------------------execution completde of saveStatusReport  method---------------- ");
 			return "saveapp";
 		} else {
 			// return "errorPage";
+			logger.warn("-------------------saveStatusReport method fail------------------------ ");
 			throw new ServerMonitorException(ErrorCode.ADD_REPORT_FAIL);
 		}
 	}
@@ -168,10 +183,13 @@ public class ApplicationController {
 	 */
 	@RequestMapping(value = "saveMailInfo", method = RequestMethod.POST)
 	public String saveEmailInfo(@ModelAttribute("email") Email email, ModelMap model) {
+		logger.info("------------------------start executing saveEmailInfo method---------------- ");
 		result = appService.addEntity(email);
 		if (result) {
+			logger.info("------------------------execution completde of saveEmailInfoss  method---------------- ");
 			return "saveapp";
 		} else {
+			logger.warn("-------------------saveStatusReport method fail------------------------ ");
 			// return "errorPage";
 			throw new ServerMonitorException(ErrorCode.ADD_EMAIL_FAIL);
 		}
@@ -186,10 +204,13 @@ public class ApplicationController {
 	 */
 	@RequestMapping(value = "editApp")
 	public String editApp(@RequestParam int appId, ModelMap model) {
+		logger.info("------------------------start executing editApp method---------------- ");
 		Application application = (Application) appService.getEntityByID(Application.class, appId);
 		if (application == null) {
+			logger.warn("-------------------editApp method fail------------------------ ");
 			throw new ServerMonitorException(ErrorCode.UPDATE_ENTITY_FAIL);
 		}
+		logger.info("------------------------execution completde of editApp  method---------------- ");
 		model.addAttribute("application", application);
 		return "edit_application";
 	}
@@ -203,11 +224,15 @@ public class ApplicationController {
 	 */
 	@RequestMapping(value = "update_application", method = RequestMethod.POST)
 	public String updateApp(@ModelAttribute("application") Application application, ModelMap model) {
+		logger.info("------------------------start executing updateApp method---------------- ");
 		System.out.println("inside update method");
 		result = appService.updateEntity(application);
 		if (result) {
+			logger.info("------------------------execution completde of updateApp  method---------------- ");
 			return "redirect:displayApplication";
 		} else {
+			
+			logger.warn("-------------------updateApp method fail------------------------ ");
 			// return "errorPage";
 			throw new ServerMonitorException(ErrorCode.UPDATE_ENTITY_FAIL);
 
@@ -223,8 +248,10 @@ public class ApplicationController {
 	 */
 	@RequestMapping(value = "editUser")
 	public String editUser(@RequestParam int userId, ModelMap model) {
+		logger.info("------------------------start executing editUser method---------------- ");
 		User user = (User) appService.getEntityByID(User.class, userId);
 		model.addAttribute("user", user);
+		logger.info("------------------------execution completde of editUser  method---------------- ");
 		return "editUSer";
 	}
 
@@ -237,11 +264,14 @@ public class ApplicationController {
 	 */
 	@RequestMapping("deleteApp")
 	public String deleteApp(@RequestParam int appId, ModelMap model) {
+		logger.info("------------------------start executing deleteApp method---------------- ");
 		result = appService.deleteEntity(Application.class, appId);
 		if (result) {
+			logger.info("------------------------execution completde of deleteApp  method---------------- ");
 			return "redirect:displayApplication";
 		} else {
 			//return "errorPage";
+			logger.warn("-------------------deleteApp method fail------------------------ ");
 			throw new ServerMonitorException(ErrorCode.DELETE_APPLICATION_FAIL);
 		}
 	}
@@ -255,10 +285,14 @@ public class ApplicationController {
 	 */
 	@RequestMapping("deleteUser")
 	public String deleteUser(@RequestParam int userId, ModelMap model) {
+		logger.info("------------------------start executing deleteUser method---------------- ");
 		result = appService.deleteEntity(User.class, userId);
 		if (result) {
+			logger.info("------------------------execution completde of deleteUser  method---------------- ");
 			return "redirect:displayUser";
 		} else {
+			
+			logger.warn("-------------------deleteUser method fail------------------------ ");
 			// return "errorPage";
 			throw new ServerMonitorException(ErrorCode.DELETE_USER_FAIL);
 		}
@@ -272,10 +306,13 @@ public class ApplicationController {
 	 */
 	@RequestMapping(value = "displayApplication")
 	public String displayApp(ModelMap modelMap) {
+		logger.info("------------------------start executing displayApp method---------------- ");
 		List<ApplicationEntity> application = appService.getEntityList(Application.class);
 		if (application == null) {
+			
 			throw new ServerMonitorException(ErrorCode.DISPLAY_ENTITY_ERROR);
 		}
+		logger.info("------------------------execution completde of displayApp  method---------------- ");
 		modelMap.addAttribute("applicationList", application);
 		return "display_app";
 	}
@@ -288,10 +325,13 @@ public class ApplicationController {
 	 */
 	@RequestMapping(value = "displayUser")
 	public String displayUser(ModelMap modelMap) {
+		logger.info("------------------------start executing displayUser method---------------- ");
 		List<ApplicationEntity> user = appService.getEntityList(User.class);
 		if (user == null) {
+			logger.warn("-------------------displayUser method fail------------------------ ");
 			throw new ServerMonitorException(ErrorCode.DISPLAY_ENTITY_ERROR);
 		}
+		logger.info("------------------------execution completde of displayUser  method---------------- ");
 		modelMap.addAttribute("user", user);
 		return "display_user";
 	}

@@ -2,8 +2,7 @@ package com.est.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +16,8 @@ import com.est.service.ApplicationService;
 @Controller
 public class LoginController {
 
+	
+	private static final Logger logger = Logger.getLogger(LoginController.class);
 	@Autowired
 	ApplicationService applicationService;
 
@@ -26,6 +27,8 @@ public class LoginController {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String login(Model model) {
+		logger.info("---------------start executing login method-------------------- ");
+		
 		return "login";
 
 	}
@@ -33,9 +36,9 @@ public class LoginController {
 	@RequestMapping(value = "validateLogin", method = RequestMethod.POST)
 	public String loginValidate(@RequestParam("userName") String name,
 			@RequestParam("password") String password) {
+		
 
-		System.out.println(name);
-		System.out.println(password);
+		logger.info("---------------start executing loginValidate  method-------------------- ");
 		User user=null;
 		user = applicationService.getNamePassword(name,password);
 
@@ -57,8 +60,10 @@ public class LoginController {
 			}*/
 		
 		if(user!=null){
+			logger.info("---------------completed executing loginValidate  method-------------------- ");
 			return "dashboard";
 		} else {
+			logger.warn("-------------------invalid identity  ------------------------ ");
 			return "login";
 		}
 	}

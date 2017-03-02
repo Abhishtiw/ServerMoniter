@@ -38,6 +38,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
 	@Override
 	public boolean addEntity(ApplicationEntity appentity) {
 		try {
+			
 			session = sessionFactory.openSession();
 			transaction = session.beginTransaction();
 			/*Saving appEntity to database*/

@@ -46,7 +46,7 @@
 					cellpadding="5">
 					<tr>
 						<td><input type="hidden" name="applicationId"
-							value="<c:out value="${application.applicationId}"/>" /></td>
+							value="<c:out value="${application.applicationId}"/>" readonly /></td>
 						<td><div id="ipError" class="error"></div></td>
 					</tr>
 					<tr>
@@ -77,17 +77,17 @@
 
 					<tr>
 						<td><input type="hidden" name="oldStatusCode"
-							value="<c:out value="${application.oldStatusCode}"/>" /></td>
+							value="<c:out value="${application.oldStatusCode}"/>" readonly/></td>
 						<td><div id="ipError" class="error"></div></td>
 					</tr>
 					<tr>
 						<td><input type="hidden" name="newStatusCode"
-							value="<c:out value="${application.newStatusCode}"/>" /></td>
+							value="<c:out value="${application.newStatusCode}"/>" readonly/></td>
 						<td><div id="ipError" class="error"></div></td>
 					</tr>
 					<tr>
 						<td><input type="hidden" name="responseGeneratedTime"
-							value="<c:out value="${application.responseGeneratedTime}"/>" /></td>
+							value="<c:out value="${application.responseGeneratedTime}"/>" readonly/></td>
 						<td><div id="ipError" class="error"></div></td>
 					</tr>
 					<tr>
