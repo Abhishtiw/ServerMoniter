@@ -38,21 +38,37 @@
 		<div align="center" id="contents"
 			style="margin-left: 20px; margin-right: 20px">
 
-			<form name="appForm" action="update_application"
-				onsubmit="return validateApplication()">
+			<form name="editAppForm" action="update_application" method="post">
+				<!-- onsubmit="return validateApplication()" -->
 
 
 				<table style="height: 306px;" width="351" cellspacing="5"
 					cellpadding="5">
 					<tr>
-
+						<td><input type="hidden" name="applicationId"
+							value="<c:out value="${application.applicationId}"/>" readonly /></td>
+						<td><div id="ipError" class="error"></div></td>
+					</tr>
+					<tr>
 						<td>Application Name:<label class="error">*</label></td>
 						<td><input type="text" name="applicationName"
 							value="<c:out value="${application.applicationName}"/>" /></td>
 						<td><div id="appNameError" class="error"></div></td>
 					</tr>
 					<tr>
-						<td>Application Type:<label class="error">*</td>
+						<td>IP Address:<label class="error">*</label></td>
+						<td><input type="text" name="internalIpAddress"
+							value="<c:out value="${application.internalIpAddress}"/>" /></td>
+						<td><div id="ipError" class="error"></div></td>
+					</tr>
+					<tr>
+						<td>URL:<label class="error">*</label></td>
+						<td><input type="text" name="applicationURL"
+							value="<c:out value="${application.applicationURL}"/>" /></td>
+						<td><div id="urlError" class="error"></div></td>
+					</tr>
+					<tr>
+						<td>Application Type:<label class="error">*</label></td>
 
 						<td><input type="text" name="applicationType"
 							value="<c:out value="${application.applicationType}"/>" /></td>
@@ -60,36 +76,24 @@
 					</tr>
 
 					<tr>
-						<td>URL:<label class="error">*</td>
-						<td><input type="text" name="applicationURL"
-							value="<c:out value="${application.applicationURL}"/>" /></td>
-						<td><div id="urlError" class="error"></div></td>
-					</tr>
-					<tr>
-						<td>IP Address:<label class="error">*</td>
-						<td><input type="text" name="internalIpAddress"
-							value="<c:out value="${application.internalIpAddress}"/>" /></td>
+						<td><input type="hidden" name="oldStatusCode"
+							value="<c:out value="${application.oldStatusCode}"/>" readonly/></td>
 						<td><div id="ipError" class="error"></div></td>
 					</tr>
 					<tr>
-						<td>Old Status Code:<label class="error"></td>
-						<td><input type="hidden" name="oldStatusCode"></td>
+						<td><input type="hidden" name="newStatusCode"
+							value="<c:out value="${application.newStatusCode}"/>" readonly/></td>
 						<td><div id="ipError" class="error"></div></td>
 					</tr>
 					<tr>
-						<td>New Status Code:<label class="error"></td>
-						<td><input type="hidden" name="newStatusCode"></td>
+						<td><input type="hidden" name="responseGeneratedTime"
+							value="<c:out value="${application.responseGeneratedTime}"/>" readonly/></td>
 						<td><div id="ipError" class="error"></div></td>
 					</tr>
 					<tr>
-						<td>Response Generated Time:<label class="error"></td>
-						<td><input type="hidden" name="responseGeneratedTime"></td>
-						<td><div id="ipError" class="error"></div></td>
-					</tr>
-					<tr>
-						<td>E-mail:<label class="error">*</td>
+						<td>E-mail:<label class="error">*</label></td>
 						<td><input type="text" name="emailId"
-							value="<c:out value="${application.applicationIpAddress}"/>" /></td>
+							value="<c:out value="${application.emailId}"/>" /></td>
 						<td><div id="ipError" class="error"></div></td>
 					</tr>
 				</table>
@@ -105,6 +109,7 @@
 					</tr>
 				</table>
 			</form>
+		</div>
 		</div>
 </body>
 </html>
