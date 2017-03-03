@@ -48,26 +48,20 @@
 		<div align="center" id="contents"
 			style="margin-left: 20px; margin-right: 20px">
 
-			<form name="registerUser" action="save_user" method="post"
-				onsubmit="return validateUser()">
+			<form name="registerUser" action="saveUser" method="post">
+				<!-- onsubmit="return validateUser()" -->
 				<table style="height: 217px;" width="520" cellspacing="5" cellpadding="5">
 
 					
 					<tr>
-						<td align="center">First Name:<label style="color: red">*</label></td>
-						<td><input type="text" name="firstname"
+						<td align="center">Name:<label style="color: red">*</label></td>
+						<td><input type="text" name="userName"
 							onkeyup="checkFirstName()" onblur="validateUser()"></td>
 						<td><div id="firstNameError" class="error"></div></td>
 					</tr>
 					<tr>
-						<td align="center">Last Name:<label style="color: red">*</label></td>
-						<td><input type="text" name="lastname"
-							onkeyup="checkLastName()" onblur="validateUser()"></td>
-						<td><div id="lastNameError" class="error"></div></td>
-					</tr>
-					<tr>
 						<td align="center">e-mail:<label style="color: red">*</label></td>
-						<td><input type="text" name="email" onkeyup="checkEmail()"
+						<td><input type="text" name="userMailId" onkeyup="checkEmail()"
 							onblur="validateUser()"></td>
 						<td><div id="emailError" class="error"></div></td>
 					</tr>
@@ -77,13 +71,13 @@
 						<td><input type="password" name="password" /></td>
 					</tr>
 					
-					<tr>
+					<!-- <tr>
 						<td align="center">Role:<label style="color: red">*</label></td>
 						<td><select name="role">
 								<option value="1">Admin</option>
 								<option value="2">Others</option>
 						</select></td>
-					</tr>
+					</tr> -->
 
 				</table>
 				<br>
@@ -91,7 +85,7 @@
 					<tr>
 						<td align="center"><button type="submit"
 								class="btn btn-info btn-sm" data-toggle="modal"
-								data-target="#myModal">Register User</button></td>
+								data-target="#myModal">Update</button></td>
 						<td><button type="reset" class="btn btn-danger btn-sm"
 								data-toggle="modal" data-target="#myModal">Clear</button></td>
 					</tr>

@@ -38,7 +38,6 @@ public class ApplicationDaoImpl implements ApplicationDao {
 	@Override
 	public boolean addEntity(ApplicationEntity appentity) {
 		try {
-			
 			session = sessionFactory.openSession();
 			transaction = session.beginTransaction();
 			/*Saving appEntity to database*/
@@ -48,8 +47,10 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			return true;
 		} catch (HibernateException e) {
 			System.out.println("Record not inserted..");
-			transaction.rollback(); //Rollback all transactions,if any exception occurs
-			return false;
+			transaction.rollback(); // Rollback all transactions,if any
+									// exception occurs
+			// return false;
+			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
 		} finally {
 			session.close();
 		}
@@ -65,10 +66,12 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			transaction.commit();
 			System.out.println("Record updated..");
 			return true;
-		} catch (HibernateException e) {
+		}  catch (HibernateException e) {
 			System.err.println("Record not updated..");
-			transaction.rollback();//Rollback all transactions,if any exception occurs
-			return false;
+			transaction.rollback();// Rollback all transactions,if any exception
+									// occurs
+			// return false;
+			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
 		} finally {
 			session.close();
 		}
@@ -86,8 +89,10 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			return true;
 		} catch (HibernateException e) {
 			System.err.println("Record not deleted");
-			transaction.rollback();//Rollback all transactions,if any exception occurs
-			return false;
+			transaction.rollback();// Rollback all transactions,if any exception
+									// occurs
+			// return false;
+			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
 		} finally {
 			session.close();
 		}
@@ -107,8 +112,10 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			transaction.commit();
 		} catch (HibernateException e) {
 			System.out.println("Failed to load details");
-			System.out.println(e);
-			transaction.rollback();//Rollback all transactions,if any exception occurs
+			// System.out.println(e);
+			transaction.rollback();// Rollback all transactions,if any exception
+									// occurs
+			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
 		} finally {
 			session.close();
 		}

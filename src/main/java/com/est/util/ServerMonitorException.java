@@ -4,7 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
+import com.est.dao.ApplicationDaoImpl;
+
 public class ServerMonitorException extends RuntimeException {
+	
+	Logger logger = Logger.getLogger(ServerMonitorException.class);
 
 	/**
 	 * properties file reference to load properties from external file
@@ -21,6 +27,20 @@ public class ServerMonitorException extends RuntimeException {
 	public ServerMonitorException(String code) {
 		loadProperties();
 		System.out.println(props.get(code));
+	}
+	
+	/**
+	 * constructor which takes error code and a throwable object 
+	 * 
+	 *  logs the throwable object 
+	 * 
+	 * @param code
+	 * @param e
+	 */
+	public ServerMonitorException(String code, Throwable e){
+		loadProperties();
+		System.out.println(props.get(code));
+		logger.warn(e);
 	}
 
 	/**

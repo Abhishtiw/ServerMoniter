@@ -42,28 +42,26 @@ public class ApplicationController {
 	private static final Logger logger = Logger.getLogger(ApplicationController.class);
 	@Autowired
 	private ApplicationService appService;
-	
+
 	@Autowired
 	private MonitorService monitorService;
-	
+
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-	    sdf.setLenient(true);
-	    binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		sdf.setLenient(true);
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
 	}
-	
-	
-	 @Scheduled(fixedDelay=10000)
-		public void doTask(){
-			monitorService.compareApplicationStatus();
-			System.out.println("mail sending");
-		}
-	
-	
+
+	@Scheduled(fixedDelay = 10000)
+	public void doTask() {
+		monitorService.compareApplicationStatus();
+		System.out.println("mail sending");
+	}
 
 	/**
-	 * To redirect to corresponding view based on the URL provided from the dashboard.
+	 * To redirect to corresponding view based on the URL provided from the
+	 * dashboard.
 	 * 
 	 * @param url
 	 * @return
@@ -74,7 +72,7 @@ public class ApplicationController {
 		if (url.equals("addApplication")) {
 			return "add_application";
 		} else if (url.equals("addUser")) {
-			return "registerUser";
+			return "register_user";
 		} else if (url.equals("addPriority")) {
 			return "add_priority";
 		} else if (url.equals("addStatusReport")) {
@@ -102,7 +100,7 @@ public class ApplicationController {
 			logger.info("------------------------execution completde of saveapplication  method---------------- ");
 			return "redirect:displayApplication";
 		}
-		
+
 		// return "errorPage";
 		logger.warn("-------------------saveapplication method fail------------------------ ");
 		throw new ServerMonitorException(ErrorCode.ADD_APPLICATION_FAIL);
@@ -122,13 +120,13 @@ public class ApplicationController {
 		if (result) {
 			logger.info("------------------------execution completde of saveapplication  method---------------- ");
 			return "redirect:displayUser";
-			
+
 		} else {
-		logger.warn("-------------------saveuser method fail------------------------ ");
+			logger.warn("-------------------saveuser method fail------------------------ ");
 			// return "errorPage";
 			throw new ServerMonitorException(ErrorCode.ADD_USER_FAIL);
 		}
-		
+
 	}
 
 	/**
@@ -231,7 +229,7 @@ public class ApplicationController {
 			logger.info("------------------------execution completde of updateApp  method---------------- ");
 			return "redirect:displayApplication";
 		} else {
-			
+
 			logger.warn("-------------------updateApp method fail------------------------ ");
 			// return "errorPage";
 			throw new ServerMonitorException(ErrorCode.UPDATE_ENTITY_FAIL);
@@ -252,7 +250,7 @@ public class ApplicationController {
 		User user = (User) appService.getEntityByID(User.class, userId);
 		model.addAttribute("user", user);
 		logger.info("------------------------execution completde of editUser  method---------------- ");
-		return "editUSer";
+		return "edit_user";
 	}
 
 	/**
@@ -270,7 +268,7 @@ public class ApplicationController {
 			logger.info("------------------------execution completde of deleteApp  method---------------- ");
 			return "redirect:displayApplication";
 		} else {
-			//return "errorPage";
+			// return "errorPage";
 			logger.warn("-------------------deleteApp method fail------------------------ ");
 			throw new ServerMonitorException(ErrorCode.DELETE_APPLICATION_FAIL);
 		}
@@ -291,7 +289,7 @@ public class ApplicationController {
 			logger.info("------------------------execution completde of deleteUser  method---------------- ");
 			return "redirect:displayUser";
 		} else {
-			
+
 			logger.warn("-------------------deleteUser method fail------------------------ ");
 			// return "errorPage";
 			throw new ServerMonitorException(ErrorCode.DELETE_USER_FAIL);
@@ -309,7 +307,7 @@ public class ApplicationController {
 		logger.info("------------------------start executing displayApp method---------------- ");
 		List<ApplicationEntity> application = appService.getEntityList(Application.class);
 		if (application == null) {
-			
+
 			throw new ServerMonitorException(ErrorCode.DISPLAY_ENTITY_ERROR);
 		}
 		logger.info("------------------------execution completde of displayApp  method---------------- ");
@@ -335,6 +333,21 @@ public class ApplicationController {
 		modelMap.addAttribute("user", user);
 		return "display_user";
 	}
-	
-	
+
+	@RequestMapping(value = "updateUser", method = RequestMethod.POST)
+	public String updateUser(@ModelAttribute("user") User user, ModelMap model) {
+		logger.info("------------------------start executing updateUser method---------------- ");
+		System.out.println("inside update method");
+		result = appService.updateEntity(user);
+		if (result) {
+			logger.info("------------------------execution completde of updateUser  method---------------- ");
+			return "redirect:displayUser";
+		} else {
+			logger.warn("-------------------updateUser method fail------------------------ ");
+			// return "errorPage";
+			throw new ServerMonitorException(ErrorCode.UPDATE_ENTITY_FAIL);
+
+		}
+	}
+
 }

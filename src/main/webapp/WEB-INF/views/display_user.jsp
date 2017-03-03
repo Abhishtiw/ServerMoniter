@@ -42,11 +42,11 @@
 								<td><c:out value="${user.userName}" /></td>
 								<td><c:out value="${user.userMailId}" /></td>
 								<td><a class="btn btn-danger btn-xs"
-									href="deleteApp?appId=<c:out value="${user.userId}" />"><span
-										class="glyphicon glyphicon-trash"></span></a></td>
-								<td><a class="btn btn-danger btn-xs"
-									href="editApp?appId=<c:out value="${user.userId}"/>"><span
+									href="editUser?userId=<c:out value="${user.userId}"/>"><span
 										class="glyphicon glyphicon-pencil"></span></a></td>
+								<td><a class="btn btn-danger btn-xs"
+									href="deleteUser?userId=<c:out value="${user.userId}" />"><span
+										class="glyphicon glyphicon-trash"></span></a></td>
 						</tr>
 						</c:forEach>
 					</table>
