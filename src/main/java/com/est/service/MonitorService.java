@@ -16,6 +16,16 @@ import com.est.dao.ApplicationDao;
 import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
 
+/**
+ * This class provides service methods which generates the response code of
+ * applications by hitting the application website.And also provides
+ * functionality to compare the previous and current status of application and
+ * calls the corresponding email sending functionality ,if any changes in any
+ * application occured.
+ * 
+ * @author rgopalraj
+ *
+ */
 public class MonitorService {
 
 	@Autowired
@@ -25,8 +35,6 @@ public class MonitorService {
 	private NotifyService notifyService;
 
 	private Application application;
-
-	private boolean sendMail;
 
 	private List<ApplicationEntity> appList;
 
@@ -46,7 +54,8 @@ public class MonitorService {
 			URLConnection urlConnection = ulr.openConnection();
 			HttpURLConnection connection = (HttpURLConnection) urlConnection;
 			connection.setRequestMethod("HEAD");
-			responseCode = connection.getResponseCode(); //Getting response code by hitting web application
+			/* Getting response code by hitting web application */
+			responseCode = connection.getResponseCode();
 			return responseCode;
 		} catch (IOException exception) {
 			System.out.println("cannot establish connection");
@@ -60,24 +69,34 @@ public class MonitorService {
 	 */
 	@Transactional
 	public void compareApplicationStatus() {
+		boolean sendMail;
 		appList = appDao.getEntityList(Application.class);
-		Iterator<ApplicationEntity> appIterator = appList.iterator();
 		if (appList.size() > 0) {
+			Iterator<ApplicationEntity> appIterator = appList.iterator();
+			sendMail = false;
 			while (appIterator.hasNext()) {
 				application = (Application) appIterator.next();
-				int oldStatus = application.getOldStatusCode();
-				int newStatus = generateResponseCode(application.getApplicationURL());
-				if (oldStatus != newStatus) {
+				/*
+				 * Calling generateResponseCode(String url) method by passing
+				 * the URL
+				 */
+				int newGeneratedStatus = generateResponseCode(application.getApplicationURL());
+				int newStatus = application.getNewStatusCode();
+				if (newStatus != newGeneratedStatus) {
+					System.out.println("Inside IF block");
 					sendMail = true;
 					application.setResponseGeneratedTime(new Date());
-					application.setOldStatusCode(application.getNewStatusCode());
-					application.setNewStatusCode(newStatus);
+					application.setOldStatusCode(newStatus);
+					application.setNewStatusCode(newGeneratedStatus);
 					appDao.updateEntity(application);
+					System.out.println("update completed");
 				}
 			}
 			if (sendMail) {
 				appList = appDao.getEntityList(Application.class);
-				notifyService.sendMail();
+				notifyService.sendMail();// Calling Mail functionality method
+			} else {
+				System.out.println("Continue Monitoring The Server..");
 			}
 		} else {
 			System.out.println("Currently no application is Running on server !!");

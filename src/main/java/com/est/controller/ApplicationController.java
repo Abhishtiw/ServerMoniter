@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -36,6 +37,7 @@ import com.est.util.ServerMonitorException;
  *
  */
 @Controller
+@EnableScheduling
 public class ApplicationController {
 
 	private boolean result;
@@ -53,11 +55,11 @@ public class ApplicationController {
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
 	}
 
-	@Scheduled(fixedDelay = 10000)
-	public void doTask() {
-		monitorService.compareApplicationStatus();
-		System.out.println("mail sending");
-	}
+	 @Scheduled(fixedDelay=1000)
+		public void doTask(){
+		 System.out.println("Inside Scheduler");
+			monitorService.compareApplicationStatus();
+		}
 
 	/**
 	 * To redirect to corresponding view based on the URL provided from the

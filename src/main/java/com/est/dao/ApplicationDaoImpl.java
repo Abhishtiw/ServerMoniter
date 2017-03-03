@@ -1,6 +1,5 @@
 package com.est.dao;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,9 +46,8 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			return true;
 		} catch (HibernateException e) {
 			System.out.println("Record not inserted..");
-			transaction.rollback(); // Rollback all transactions,if any
-									// exception occurs
-			// return false;
+			/*Rollback all transactions,if any exception occurs*/
+			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
 		} finally {
 			session.close();
@@ -67,10 +65,9 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			System.out.println("Record updated..");
 			return true;
 		}  catch (HibernateException e) {
-			System.err.println("Record not updated..");
-			transaction.rollback();// Rollback all transactions,if any exception
-									// occurs
-			// return false;
+			System.err.println("Record not updated..")
+			/*Rollback all transactions,if any exception occurs*/;
+			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
 		} finally {
 			session.close();
@@ -89,9 +86,8 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			return true;
 		} catch (HibernateException e) {
 			System.err.println("Record not deleted");
-			transaction.rollback();// Rollback all transactions,if any exception
-									// occurs
-			// return false;
+			/*Rollback all transactions,if any exception occurs*/
+			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
 		} finally {
 			session.close();
@@ -113,8 +109,8 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		} catch (HibernateException e) {
 			System.out.println("Failed to load details");
 			// System.out.println(e);
-			transaction.rollback();// Rollback all transactions,if any exception
-									// occurs
+			/*Rollback all transactions,if any exception occurs*/
+			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
 		} finally {
 			session.close();
@@ -135,7 +131,8 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			return app;
 		} catch (HibernateException e) {
 			System.err.println("Record not loaded..");
-			transaction.rollback();//Rollback all transactions,if any exception occurs
+			/*Rollback all transactions,if any exception occurs*/
+			transaction.rollback();
 			return null;
 		} finally {
 			session.close();
@@ -154,7 +151,8 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			user=(User) query.uniqueResult();		
 		} catch (HibernateException e) {
 			e.printStackTrace();
-			transaction.rollback();//Rollback all transactions,if any exception occurs
+			/*Rollback all transactions,if any exception occurs*/
+			transaction.rollback();
 		}
 		finally {
 			session.close();
