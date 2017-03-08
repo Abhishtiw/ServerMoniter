@@ -1,0 +1,74 @@
+@CHARSET "ISO-8859-1";
+ .error{
+color: red;
+ font-style: italic;
+ font-size: 10px;
+}
+
+  
+  body {
+        background-image: url("../image/45.jpg");
+		font-family:Tahoma, Geneva, sans-serif;
+} 
+
+#container{
+	width:550px;
+	background-color:rgba(250,250,252,.9);
+	margin:auto;
+	margin-top:10px;
+	margin-bottom:10px;
+	box-shadow:0 0 3px #999;
+	}
+#container_body{
+	padding:20px;
+	}
+.form_title{
+	font-size:35px;
+	color:#141823;
+	text-align:center;
+	padding:10px;
+	font-weight:normal;
+	}
+.head_para{
+	font-size:19px;
+	color:#99a2a7;
+	text-align:center;
+	font-weight:normal;
+	}
+
+
+.firstnameorlastname{
+	 margin-right:20px;
+	}
+.input_name{
+	width:207px;
+	padding:5px;
+	font-size:18px;
+	}
+	.input_num
+	{
+	width:207px;
+	padding:5px;
+	font-size:18px;
+	}
+
+	.input_number
+	{
+	width:434px;
+	padding:5px;
+	font-size:18px;
+	}
+.input_email{
+	width:300px;
+	padding:5px;
+	font-size:18px;
+	}
+	
+	.comments{
+width:400px;
+	padding:5px;
+	font-size:18px;
+
+select{
+	padding:5px;
+	}

@@ -42,7 +42,17 @@
 							<th>Delete</th>
 						</tr>
 						<tr>
+							<td><c:out value="${ill.applicationId}" /></td>
+							<td><c:out value="${ill.applicationName}" /></td>
+							<td><c:out value="${ill.applicationType}" /></td>
+							<td><c:out value="${ill.applicationURL}" /></td>
+							<td><c:out value="${ill.emailId}" /></td>
+							<td><c:out value="${ill.internalIpAddress}" /></td>
+							<td><c:out value="${ill.newStatusCode}" /></td>
+							<td><c:out value="${ill.oldStatusCode}" /></td>
+						</tr>
 							<c:forEach items="${applicationList}" var="application">
+							<tr>
 								<td><c:out value="${application.applicationId}" /></td>
 								<td><c:out value="${application.applicationName}" /></td>
 								<td><c:out value="${application.applicationType}" /></td>
@@ -52,13 +62,13 @@
 								<td><c:out value="${application.newStatusCode}" /></td>
 								<td><c:out value="${application.oldStatusCode}" /></td>
 
-								<td><a class="btn btn-danger btn-xs"
+								<td><a class="btn btn-primary btn-xs"
 									href="editApp?appId=<c:out value="${application.applicationId}"/>"><span
 										class="glyphicon glyphicon-pencil"></span></a></td>
-								<td><a class="btn btn-primary btn-xs"
+								<td><a class="btn btn-danger btn-xs"
 									href="deleteApp?appId=<c:out value="${application.applicationId}" />"><span
 										class="glyphicon glyphicon-trash"></span></a></td>
-						</tr>
+							</tr>
 						</c:forEach>
 					</table>
 				</div>

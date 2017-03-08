@@ -41,7 +41,7 @@
 								<td><c:out value="${user.userId}" /></td>
 								<td><c:out value="${user.userName}" /></td>
 								<td><c:out value="${user.emailId}" /></td>
-								<td><a class="btn btn-danger btn-xs"
+								<td><a class="btn btn-primary btn-xs"
 									href="editUser?userId=<c:out value="${user.userId}"/>"><span
 										class="glyphicon glyphicon-pencil"></span></a></td>
 								<td><a class="btn btn-danger btn-xs"

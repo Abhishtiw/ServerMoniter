@@ -11,6 +11,7 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
 import com.est.entity.User;
 import com.est.util.ErrorCode;
@@ -103,7 +104,11 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			session = sessionFactory.openSession();
 			transaction = session.beginTransaction();
 			System.out.println("entity===>" + entityClass.getSimpleName());
-			query = session.createQuery("from " + entityClass.getSimpleName());
+			if (entityClass.getSimpleName().equals("Application")) {
+				query = session.createQuery("from Application where applicationType <> 'ill'");
+			} else {
+				query = session.createQuery("from " + entityClass.getSimpleName());
+			}
 			System.out.println("query==>" + query);
 			entityList = query.list();
 			transaction.commit();
@@ -162,5 +167,48 @@ public class ApplicationDaoImpl implements ApplicationDao {
 
 	}
 	
+	@Override
+	public Application getISPList(Class<Application> class1) {
+		Application app = null;
+		try {
+			session = sessionFactory.openSession();
+			transaction = session.beginTransaction();
+			query = session.createQuery("from Application where applicationType = 'ill'");
+			System.out.println("query==>" + query);
+			query.setMaxResults(1);
+			app = (Application) query.uniqueResult();
+			transaction.commit();
+		} catch (HibernateException e) {
+			System.out.println("Failed to load details");
+			// System.out.println(e);
+			/* Rollback all transactions,if any exception occurs */
+			transaction.rollback();
+			throw new ServerMonitorException(ErrorCode.NO_IIL_FOUND, e);
+		} finally {
+			session.close();
+		}
+		return app;
+	}
 	
+	@Override
+	public String getPasswordBasedOnEmailId(String emailId) {
+		User user = null;
+		try {
+			session = sessionFactory.openSession();
+			transaction = session.beginTransaction();
+			query=session.createQuery("from User where emailId='"+emailId+"'");
+			query.setMaxResults(1);
+			user=(User) query.uniqueResult();
+			return user.getPassword();
+		} catch (HibernateException e) {
+			e.printStackTrace();
+			/*Rollback all transactions,if any exception occurs*/
+			transaction.rollback();
+			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
+		}
+		finally {
+			session.close();
+		}
+	}
+
 }

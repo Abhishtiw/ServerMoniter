@@ -13,7 +13,6 @@ function validateUser() {
 	var password = document.registerUser.password.value;
 	
 	if (firstname == "") {
-		// alert("Name can't be blank");
 		document.getElementById('firstNameError').innerHTML = "First Name cannot be empty";
 		fv = false;
 	}
@@ -23,13 +22,6 @@ function validateUser() {
 		fv = false;
 	}
 
-	/*
-	 * if (atposition < 1 || dotposition < atposition + 2 || dotposition + 2 >=
-	 * email.length) { // alert("Please enter a valid e-mail address
-	 * example:abc@gmail.com"); document.getElementById('emailError').innerHTML =
-	 * "Please enter valid e-mail address "; fv = false; }
-	 */
-	
 	if (email == "") {
 		document.getElementById('emailError').innerHTML = "Email cannot be empty";
 		fv = false;

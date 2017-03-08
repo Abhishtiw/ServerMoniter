@@ -27,6 +27,7 @@ import com.est.entity.Email;
 import com.est.entity.User;
 import com.est.service.ApplicationService;
 import com.est.service.MonitorService;
+import com.est.service.NotifyService;
 import com.est.util.ErrorCode;
 import com.est.util.ServerMonitorException;
 
@@ -50,6 +51,9 @@ public class ApplicationController {
 
 	@Autowired
 	Email email;
+	
+	@Autowired
+	private NotifyService notifyService;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -58,10 +62,10 @@ public class ApplicationController {
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
 	}
 
-	@Scheduled(fixedDelay = 1000)
-	public void doTask() {
-		System.out.println("Inside Scheduler");
-		monitorService.compareApplicationStatus();
+	@Scheduled(fixedDelay=2000)
+	public void doTask(){
+	 System.out.println("Inside Scheduler");
+		monitorService.compareISPstatus();
 	}
 
 	/**
@@ -101,6 +105,7 @@ public class ApplicationController {
 	@RequestMapping(value = "saveApplication", method = RequestMethod.POST)
 	public String saveApp(@ModelAttribute("application") Application application, ModelMap model) {
 		logger.info("------------------------start executing saveapplication method---------------- ");
+		
 		result = appService.addEntity(application);
 		if (result) {
 			logger.info("------------------------execution completde of saveapplication  method---------------- ");
@@ -322,6 +327,9 @@ public class ApplicationController {
 	@RequestMapping(value = "displayApplication")
 	public String displayApp(ModelMap modelMap) {
 		logger.info("------------------------start executing displayApp method---------------- ");
+		
+		Application ill = appService.getISPList(Application.class);
+		modelMap.addAttribute("ill",ill);
 		List<ApplicationEntity> application = appService.getEntityList(Application.class);
 		if (application == null) {
 
@@ -365,6 +373,44 @@ public class ApplicationController {
 			throw new ServerMonitorException(ErrorCode.UPDATE_ENTITY_FAIL);
 
 		}
+	}
+	
+	@RequestMapping(value = "applicationstatus")
+	public String displayApplicationstatus(ModelMap modelMap) {
+		logger.info("------------------------start executing displayApplicationstatus method---------------- ");
+		System.out.println("inside application status");
+		List<ApplicationEntity> applicationStatus = appService.getEntityList(Application.class);
+		//System.out.println(applicationStatus.toString());
+		if (applicationStatus == null) {
+			logger.warn("-------------------displayUser method fail------------------------ ");
+			throw new ServerMonitorException(ErrorCode.DISPLAY_ENTITY_ERROR);
+		}
+		logger.info("------------------------execution completde of displayApplicationstatus  method---------------- ");
+		modelMap.addAttribute("applicationStatus", applicationStatus);
+		return "status_Report";
+	}
+	
+	/**
+	 * Redirecting to lost_password page
+	 * @return
+	 */
+	@RequestMapping("lost_password")
+	public String lostPassword(){	
+		return "lost_password";
+	}
+	
+	/**
+	 * 
+	 * @param emailId
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="get_password",method=RequestMethod.POST)
+	public String getPassword(@RequestParam("emailId") String emailId,ModelMap model){
+		String password=appService.getPasswordBasedOnEmailId(emailId);
+		notifyService.sendLostPassword(emailId,password);
+		return "redirect:/";
+		
 	}
 
 }

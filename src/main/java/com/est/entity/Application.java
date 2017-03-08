@@ -19,7 +19,7 @@ public class Application extends ApplicationEntity {
 	private int applicationId;
 	private String applicationName;
 	@Column(name = "ipaddress")
-	private int internalIpAddress;
+	private String internalIpAddress;
 	private String applicationURL;
 	private String applicationType;
 	private int oldStatusCode;
@@ -44,11 +44,11 @@ public class Application extends ApplicationEntity {
 		this.applicationName = applicationName;
 	}
 
-	public int getInternalIpAddress() {
+	public String getInternalIpAddress() {
 		return internalIpAddress;
 	}
 
-	public void setInternalIpAddress(int internalIpAddress) {
+	public void setInternalIpAddress(String internalIpAddress) {
 		this.internalIpAddress = internalIpAddress;
 	}
 

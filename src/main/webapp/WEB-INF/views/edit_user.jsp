@@ -73,7 +73,7 @@
 						<td align="center">e-mail:<label style="color: red">*</label></td>
 						<td><input type="text" name="userMailId"
 							onkeyup="checkEmail()" onblur="validateUser()"
-							value="<c:out value="${user.userMailId}"/>" /></td>
+							value="<c:out value="${user.emailId}"/>" /></td>
 						<td><div id="emailError" class="error"></div></td>
 					</tr>
 

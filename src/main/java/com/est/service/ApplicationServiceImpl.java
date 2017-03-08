@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.est.dao.ApplicationDao;
+import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
 import com.est.entity.User;
 /**
@@ -58,5 +59,17 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public User getNamePassword(String userName, String password){
 		User user=appDao.getNamePassword(userName, password);
 		return user;
+	}
+	
+	@Override
+	public Application getISPList(Class<Application> class1) {
+		Application application = appDao.getISPList(class1);
+		return application;
+	}
+	
+	@Override
+	public String getPasswordBasedOnEmailId(String emailId) {
+		String email = appDao.getPasswordBasedOnEmailId(emailId);
+		return email;
 	}
 }

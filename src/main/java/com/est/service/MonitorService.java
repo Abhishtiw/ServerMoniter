@@ -119,5 +119,66 @@ public class MonitorService {
 			System.out.println("Currently no application is Running on server !!");
 		}
 	}
+	
+	public int checkNetworkStatus(String ipAddr) {
+		// logger.info("checkNetworkStatus>>[" + ipAddr + "]");
+		try {
+			String cmd = "";
+			if (System.getProperty("os.name").startsWith("Windows")) {
+				// For Windows
+				cmd = "ping -n 1 " + ipAddr;
+			} else {
+				// For Linux and OSX
+				cmd = "ping -c 1 " + ipAddr;
+			}
+
+			Process myProcess = Runtime.getRuntime().exec(cmd);
+			myProcess.waitFor();
+			// logger.info("checkNetworkStatus>>myProcess.exitValue()>>>[" +
+			// myProcess.exitValue() + "]");
+			if (myProcess.exitValue() == 0) {
+				return 200;
+			} else {
+				// logger.info(ipAddr + "is Offline");
+				return 404;
+			}
+
+		} catch (Exception e) {
+			// logger.error("testing of ip failed due to exception: " + e);
+			e.printStackTrace();
+			return 404;
+
+		}
+	}
+
+	public void compareISPstatus() {
+		Application app = appDao.getISPList(Application.class);
+		if (app != null) {
+
+			int newStatus = app.getNewStatusCode();
+			int networkStatus = app.getNewStatusCode();
+			networkStatus = checkNetworkStatus(String.valueOf(app.getApplicationURL()));
+			System.out.println(networkStatus);
+
+			if (networkStatus == 200) {
+				System.out.println("internet service provider is working");
+				compareApplicationStatus();
+			}
+
+			if (newStatus != networkStatus) {
+				app.setResponseGeneratedTime(new Date());
+				app.setOldStatusCode(newStatus);
+				app.setNewStatusCode(networkStatus);
+				appDao.updateEntity(app);
+				notifyService.sendISPErrorMail();// Calling Mail functionality
+													// method
+			} else {
+				System.out.println("Continue Monitoring ILL...");
+			}
+		}else{
+			System.out.println("currently no IIL info is present in the database !");
+		}
+
+	}
 
 }
