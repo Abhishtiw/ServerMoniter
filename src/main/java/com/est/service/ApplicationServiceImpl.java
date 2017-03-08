@@ -14,8 +14,6 @@ import com.est.entity.User;
  * This is an implementation class of type <tt>ApplicationService</tt> interface.It
  * overrides all the methods declared in that.
  * 
- * @author rgopalraj
- *
  */
 public class ApplicationServiceImpl implements ApplicationService {
 

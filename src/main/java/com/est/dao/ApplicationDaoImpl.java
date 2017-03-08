@@ -21,8 +21,6 @@ import com.est.util.ServerMonitorException;
  * This is an implementation class of type <tt>ApplicationDao</tt> interface.It
  * overrides all the methods declared in that.
  * 
- * @author rgopalraj
- *
  */
 @Repository
 public class ApplicationDaoImpl implements ApplicationDao {

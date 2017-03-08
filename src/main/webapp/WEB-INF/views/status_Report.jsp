@@ -29,26 +29,46 @@
 				</tr>
 			</thead>
 			<tbody>
+				<tr>
+					<td><c:out value="${ill.applicationName}" /></td>
+					<td><c:out value="${ill.applicationType}" /></td>
+					<td><c:out value="${ill.applicationURL}" /></td>
+					<td><c:out value="${ill.internalIpAddress}" /></td>
+					<td><c:out value="${ill.newStatusCode}" /></td>
+					<td><c:out value="${ill.responseGeneratedTime}" /></td>
+					<c:choose>
+						<c:when
+							test="${(ill.newStatusCode >= 200) && (ill.newStatusCode <= 399)}">
+							<td><img alt="Up" src="resources/image/up.png"></td>
+						</c:when>
+						<c:otherwise>
+							<td><img alt="Down" src="resources/image/down.png"></td>
+						</c:otherwise>
+					</c:choose>
+				</tr>
+				<c:if
+					test="${(ill.newStatusCode >= 200) && (ill.newStatusCode <= 399)}">
 					<c:forEach items="${applicationStatus}" var="application">
-					<tr>
-						<td><c:out value="${application.applicationName}" /></td>
-						<td><c:out value="${application.applicationType}" /></td>
-						<td><c:out value="${application.applicationURL}" /></td>
-						<td><c:out value="${application.internalIpAddress}" /></td>
-						<td><c:out value="${application.newStatusCode}" /></td>
-						<td><c:out value="${application.responseGeneratedTime}" /></td>
-						<c:choose>
-							<c:when
-								test="${(application.newStatusCode >= 200) && (application.newStatusCode <= 399)}">
-								<td><img alt="Up" src="resources/image/up.png"></td>
-							</c:when>
-							<c:otherwise>
-								<td><img alt="Down" src="resources/image/down.png"></td>
-							</c:otherwise>
-						</c:choose>
-									
-					</tr>
-				</c:forEach>
+						<tr>
+							<td><c:out value="${application.applicationName}" /></td>
+							<td><c:out value="${application.applicationType}" /></td>
+							<td><c:out value="${application.applicationURL}" /></td>
+							<td><c:out value="${application.internalIpAddress}" /></td>
+							<td><c:out value="${application.newStatusCode}" /></td>
+							<td><c:out value="${application.responseGeneratedTime}" /></td>
+							<c:choose>
+								<c:when
+									test="${(application.newStatusCode >= 200) && (application.newStatusCode <= 399)}">
+									<td><img alt="Up" src="resources/image/up.png"></td>
+								</c:when>
+								<c:otherwise>
+									<td><img alt="Down" src="resources/image/down.png"></td>
+								</c:otherwise>
+							</c:choose>
+
+						</tr>
+					</c:forEach>
+				</c:if>
 		</table>
 
 
@@ -88,7 +108,9 @@
 											});
 						});
 	</script>
-	<center><button id="btnExport">Export to xls</button></center>
+	<center>
+		<button id="btnExport">Export to xls</button>
+	</center>
 </body>
 </html>
 

@@ -25,8 +25,6 @@ import com.est.util.ErrorCode;
  * calls the corresponding email sending functionality ,if any changes in any
  * application occured.
  * 
- * @author rgopalraj
- *
  */
 public class MonitorService {
 

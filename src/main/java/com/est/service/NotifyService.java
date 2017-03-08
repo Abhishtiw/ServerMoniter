@@ -325,7 +325,7 @@ public class NotifyService {
 		}
 	
 		fromEmail = props.getProperty("username");
-		password = props.getProperty("password");
+		password = props.getProperty("password"); 
 		props.put("mail.smtp.host", props.getProperty("smtpHost"));
 		props.put("mail.smtp.port", props.getProperty("TLSport"));
 		props.put("mail.smtp.auth", props.getProperty("authValue"));

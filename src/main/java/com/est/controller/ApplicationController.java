@@ -33,8 +33,6 @@ import com.est.util.ServerMonitorException;
 
 /**
  * Handles requests for the application home page.
- * 
- * @author rgopalraj
  *
  */
 @Controller
@@ -379,6 +377,8 @@ public class ApplicationController {
 	public String displayApplicationstatus(ModelMap modelMap) {
 		logger.info("------------------------start executing displayApplicationstatus method---------------- ");
 		System.out.println("inside application status");
+		Application ill = appService.getISPList(Application.class);
+		modelMap.addAttribute("ill",ill);
 		List<ApplicationEntity> applicationStatus = appService.getEntityList(Application.class);
 		//System.out.println(applicationStatus.toString());
 		if (applicationStatus == null) {

@@ -11,8 +11,6 @@ import com.est.entity.User;
  * basic functionality to acheive creation,updation,deletion and retrival of any
  * entity.
  * 
- * @author rgopalraj
- *
  */
 public interface ApplicationService {
 	/**
