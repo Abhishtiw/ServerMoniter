@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-
+<link rel="stylesheet" href="resources/css/style1.css">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 <link rel="stylesheet"
@@ -103,9 +103,6 @@
 						<td align="center"><button type="submit"
 								class="btn btn-success btn-sm" data-toggle="modal"
 								data-target="#myModal">Update</button></td>
-						<td align="right"><button type="reset"
-								class="btn btn-info btn-sm" data-toggle="modal"
-								data-target="#myModal">Go to Menu</button></td>
 					</tr>
 				</table>
 			</form>

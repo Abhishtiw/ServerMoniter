@@ -11,8 +11,10 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.est.dto.ApplicationAndStatusDto;
 import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
+import com.est.entity.ApplicationStatus;
 import com.est.entity.User;
 import com.est.util.ErrorCode;
 import com.est.util.ServerMonitorException;
@@ -208,5 +210,87 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			session.close();
 		}
 	}
+	
+	@Override
+	public boolean deleteEmailRecord(String mailId) {
+		int result;
+		try {
+			session = sessionFactory.openSession();
+			transaction = session.beginTransaction();
+			query=session.createQuery("delete from Email where emailId= :emailid");
+			query.setString("emailid", mailId);
+			 result=query.executeUpdate();
+			 transaction.commit();
+			 if(result>0){
+				 return true;
+			 }
+			 else{
+				 System.err.println("Record with email Id "+mailId+"  is not deleted!!");
+				 return false;
+			 }	
+		} catch (HibernateException e) {
+			e.printStackTrace();
+			/*Rollback all transactions,if any exception occurs*/
+			transaction.rollback();
+			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
+		}
+		finally {
+			session.close();
+		}
+	}
+
+	 /*
+		 * this method will joins both the application entity and the application
+		 * status entity by using HQL
+		 */
+		public List<ApplicationAndStatusDto> getListApplicationAndStatus() {
+			List<ApplicationAndStatusDto> appStatusList = new ArrayList<ApplicationAndStatusDto>();
+			
+			ApplicationAndStatusDto dto ;
+
+			try {
+				session = sessionFactory.openSession();
+				transaction = session.beginTransaction();
+				Application app = null;
+				ApplicationStatus status = null;
+				query = session.createQuery("from Application a, ApplicationStatus s where a.newStatusCode = s.statusCode");
+				
+				List<Object[]> list = query.list();
+
+				for (Object[] obj : list) {
+					dto =  new ApplicationAndStatusDto();
+					app = (Application) obj[0];
+					if(!app.getApplicationType().equals("ill")){
+					
+					status = (ApplicationStatus) obj[1];
+
+					dto.setApplicationId(app.getApplicationId());
+					dto.setApplicationName(app.getApplicationName());
+					dto.setApplicationType(app.getApplicationType());
+					dto.setApplicationURL(app.getApplicationURL());
+					dto.setInternalIpAddress(app.getInternalIpAddress());
+					dto.setResponseGeneratedTime(app.getResponseGeneratedTime());
+					dto.setNewStatusCode(app.getNewStatusCode());
+					dto.setMessage(status.getStatusMessage());
+					System.out.println("--------------------------------------------------------------");
+					System.out.println("!@@#@ : " + dto);
+					
+					appStatusList.add(dto);
+					}
+				}
+				System.out.println("--------------------------------------------------------------");
+				//System.out.println(" List :" + result.size());
+
+				System.out.println("query==>" + query);
+
+			} catch (HibernateException e) {
+				transaction.rollback();
+			} finally {
+				session.close();
+			}
+			return appStatusList;
+
+		}
+	
 
 }

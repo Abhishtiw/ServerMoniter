@@ -2,6 +2,7 @@ package com.est.service;
 
 import java.util.List;
 
+import com.est.dto.ApplicationAndStatusDto;
 import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
 import com.est.entity.User;
@@ -63,5 +64,9 @@ public interface ApplicationService {
 	public Application getISPList(Class<Application> class1);
 	
 	public String getPasswordBasedOnEmailId(String emailId);
+	
+	public boolean deleteEmailRecord(String mailId);
+	
+	public List<ApplicationAndStatusDto> getListApplicationAndStatus();
 
 }

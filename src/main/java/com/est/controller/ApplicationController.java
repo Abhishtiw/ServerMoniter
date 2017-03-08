@@ -71,7 +71,7 @@ public class ApplicationController {
 		monitorService.compareISPstatus();
 	}
 
-	 @Scheduled(fixedDelay=1000)
+	 @Scheduled(fixedDelay=1000*30*60)
 		public void doTask2(){
 		 System.out.println("server status checking");
 		 serverStatuscheck.hostAvailabilityCheck();
@@ -93,12 +93,6 @@ public class ApplicationController {
 			return "add_application";
 		} else if (url.equals("addUser")) {
 			return "register_user";
-		} else if (url.equals("addPriority")) {
-			return "add_priority";
-		} else if (url.equals("addStatusReport")) {
-			return "add_status_report";
-		} else if (url.equals("addEmail")) {
-			return "add_email";
 		}
 		logger.info("------------------------execution completde of add application method---------------- ");
 		return "errorPage";
@@ -314,12 +308,17 @@ public class ApplicationController {
 	 * @return
 	 */
 	@RequestMapping("deleteUser")
-	public String deleteUser(@RequestParam int userId, ModelMap model) {
+	public String deleteUser(@RequestParam int userId, @RequestParam String mailId) {
 		logger.info("------------------------start executing deleteUser method---------------- ");
-		result = appService.deleteEntity(User.class, userId);
-		if (result) {
-			logger.info("------------------------execution completde of deleteUser  method---------------- ");
+		boolean userResult = appService.deleteEntity(User.class, userId);
+		boolean mailResult = appService.deleteEmailRecord(mailId);
+		if ((userResult == true) && (mailResult == true)) {
+			logger.info("------------------------execution completed of saveapplication  method---------------- ");
 			return "redirect:displayUser";
+
+		} else if ((userResult == false) || (mailResult == false)) {
+			logger.warn("-------------------save user or save email info fail-----------");
+			throw new ServerMonitorException(ErrorCode.ADD_USER_WITH_EMAIL_FAIL);
 		} else {
 
 			logger.warn("-------------------deleteUser method fail------------------------ ");
@@ -368,6 +367,8 @@ public class ApplicationController {
 		modelMap.addAttribute("user", user);
 		return "display_user";
 	}
+	
+	
 
 	@RequestMapping(value = "updateUser", method = RequestMethod.POST)
 	public String updateUser(@ModelAttribute("user") User user, ModelMap model) {
@@ -423,6 +424,11 @@ public class ApplicationController {
 		notifyService.sendLostPassword(emailId,password);
 		return "redirect:/";
 		
+	}
+	
+	@RequestMapping(value="signout",method=RequestMethod.GET)
+	public String signOut(){
+		return "redirect:/";
 	}
 
 }

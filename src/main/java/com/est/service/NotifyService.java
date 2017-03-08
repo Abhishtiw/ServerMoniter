@@ -24,6 +24,7 @@ import javax.mail.PasswordAuthentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.est.dto.ApplicationAndStatusDto;
 import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
 import com.est.entity.Email;
@@ -95,6 +96,7 @@ public class NotifyService {
 				message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailId));
 				// message.setRecipient(Message.RecipientType.CC, new
 				// InternetAddress(emailId));
+				message.setSubject("About Applications status changes");
 				MimeMultipart multipart = new MimeMultipart("related");
 
 				BodyPart messageBodyPart = new MimeBodyPart();
@@ -105,33 +107,35 @@ public class NotifyService {
 						+ "ip_address" + "</th>" + "<th>" + "Response_Code" + "</th>" + "<th>" + "Status" + "</th>"
 						+ "</tr>");
 
-				List<ApplicationEntity> applicationList = appService.getEntityList(Application.class);
-				Iterator<ApplicationEntity> iterator = applicationList.iterator();
+				List<ApplicationAndStatusDto> appStatusList = appService.getListApplicationAndStatus();
+
+				Iterator<ApplicationAndStatusDto> iterator = appStatusList.iterator();
 				while (iterator.hasNext()) {
-					Application application = (Application) iterator.next();
+					ApplicationAndStatusDto appStatusDto = (ApplicationAndStatusDto) iterator.next();
 					email.append("<tr>");
 					email.append("<td>");
-					email.append(application.getApplicationName());
+					email.append(appStatusDto.getApplicationName());
 					email.append("</td>");
 
 					email.append("<td>");
-					email.append(application.getApplicationType());
+					email.append(appStatusDto.getApplicationType());
 					email.append("</td>");
 
 					email.append("<td>");
-					email.append(application.getApplicationURL());
+					email.append(appStatusDto.getApplicationURL());
 					email.append("</td>");
 
 					email.append("<td>");
-					email.append(application.getInternalIpAddress());
+					email.append(appStatusDto.getInternalIpAddress());
 					email.append("</td>");
 
 					email.append("<td>");
-					email.append(application.getNewStatusCode());
+					email.append("<span title=" + appStatusDto.getMessage() + ">" + appStatusDto.getNewStatusCode());
+					email.append("</span>");
 					email.append("</td>");
 
 					email.append("<td>");
-					if ((application.getNewStatusCode() >= 200) && (application.getNewStatusCode() <= 399)) {
+					if ((appStatusDto.getNewStatusCode() >= 200) && (appStatusDto.getNewStatusCode() <= 399)) {
 						email.append("<img src=\"cid:yes\" alt='up'/>");
 					} else {
 						email.append("<img src=\"cid:no\" alt='down'/>");
@@ -141,7 +145,6 @@ public class NotifyService {
 					email.append("<tr>");
 				}
 				email.append("</table>" + "</body>" + "</html>");
-
 				messageBodyPart.setContent(email.toString(), "text/html");
 				multipart.addBodyPart(messageBodyPart);
 
@@ -164,9 +167,9 @@ public class NotifyService {
 
 				// put everything together
 				message.setContent(multipart);
-
 				Transport.send(message);
 				System.out.println("Mail Sent");
+
 			} catch (MessagingException e) {
 				System.out.println("Mail fail");
 				e.printStackTrace();
@@ -224,7 +227,7 @@ public class NotifyService {
 				message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailId));
 				// message.setRecipient(Message.RecipientType.CC, new
 				// InternetAddress(emailId));
-				message.setSubject("About status changes");
+				message.setSubject("About ILL status changes");
 
 				MimeMultipart multipart = new MimeMultipart("related");
 
@@ -303,11 +306,11 @@ public class NotifyService {
 			System.out.println("specify the system admin");
 		}
 	}
-	
-	 /*
-	 *
-	 */
-	public void sendLostPassword(String emailId, String pwd){
+
+	/*
+	*
+	*/
+	public void sendLostPassword(String emailId, String pwd) {
 		final String fromEmail;
 		final String password;
 		System.out.println("Mail sending Block");
@@ -316,16 +319,15 @@ public class NotifyService {
 			loadProperties();
 			System.out.println("loading properties successfull!!");
 
-
 		} catch (FileNotFoundException ex) {
 			System.out.println("Properties file is not found");
 			System.out.println(ex);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-	
+
 		fromEmail = props.getProperty("username");
-		password = props.getProperty("password"); 
+		password = props.getProperty("password");
 		props.put("mail.smtp.host", props.getProperty("smtpHost"));
 		props.put("mail.smtp.port", props.getProperty("TLSport"));
 		props.put("mail.smtp.auth", props.getProperty("authValue"));
@@ -346,7 +348,7 @@ public class NotifyService {
 			System.out.println("Mail Check");
 
 			message.setSubject("Server monitor application User password");
-			message.setText(" Your Password : "+pwd);
+			message.setText(" Your Password : " + pwd);
 
 			Transport.send(message);
 			System.out.println("Mail Sent");
@@ -355,6 +357,7 @@ public class NotifyService {
 			e.printStackTrace();
 		}
 	}
+
 	public void sendPrimaryServerUnreachableMessage() {
 		final String fromEmail;
 		final String password;
@@ -402,7 +405,7 @@ public class NotifyService {
 				message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailId));
 				// message.setRecipient(Message.RecipientType.CC, new
 				// InternetAddress(emailId));
-				message.setSubject("primary server is unreachable");
+				message.setSubject("india VM monitoring");
 
 				MimeMultipart multipart = new MimeMultipart("related");
 
@@ -482,7 +485,4 @@ public class NotifyService {
 		}
 	}
 
-	
 }
-
-

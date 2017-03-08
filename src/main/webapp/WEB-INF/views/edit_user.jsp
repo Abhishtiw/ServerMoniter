@@ -26,6 +26,7 @@
 </head>
 
 <body>
+
 	<div id="description"></div>
 	<!--container start-->
 	<div id="container">
@@ -71,7 +72,7 @@
 					</tr>
 					<tr>
 						<td align="center">e-mail:<label style="color: red">*</label></td>
-						<td><input type="text" name="userMailId"
+						<td><input type="text" name="emailId"
 							onkeyup="checkEmail()" onblur="validateUser()"
 							value="<c:out value="${user.emailId}"/>" /></td>
 						<td><div id="emailError" class="error"></div></td>
@@ -97,7 +98,7 @@
 					<tr>
 						<td align="center"><button type="submit"
 								class="btn btn-info btn-sm" data-toggle="modal"
-								data-target="#myModal">Register User</button></td>
+								data-target="#myModal">Update</button></td>
 						<td><button type="reset" class="btn btn-danger btn-sm"
 								data-toggle="modal" data-target="#myModal">Clear</button></td>
 					</tr>
@@ -110,5 +111,8 @@
 
 		</div>
 	</div>
+	<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+    <script src="resources/js/index.js"></script>
 </body>
 </html>

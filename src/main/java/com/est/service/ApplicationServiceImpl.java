@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.est.dao.ApplicationDao;
+import com.est.dto.ApplicationAndStatusDto;
 import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
 import com.est.entity.User;
@@ -69,5 +70,16 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public String getPasswordBasedOnEmailId(String emailId) {
 		String email = appDao.getPasswordBasedOnEmailId(emailId);
 		return email;
+	}
+	
+	 @Override
+		public boolean deleteEmailRecord(String mailId) {
+			return 	appDao.deleteEmailRecord(mailId);
+		}
+
+	@Override
+	public List<ApplicationAndStatusDto> getListApplicationAndStatus() {
+		List<ApplicationAndStatusDto> appAndStatusList = appDao.getListApplicationAndStatus();
+		return appAndStatusList;
 	}
 }

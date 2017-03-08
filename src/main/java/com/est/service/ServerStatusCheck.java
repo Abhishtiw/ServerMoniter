@@ -9,7 +9,7 @@ import java.util.TimerTask;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ServerStatusCheck {
-	private static final String SERVER_ADDRESS = "10.10.10.79";
+	private static final String SERVER_ADDRESS = "10.10.10.77";
 	private static final int TCP_SERVER_PORT = 8081;
 	private static boolean connected = false;
 	static Socket socket;

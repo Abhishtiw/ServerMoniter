@@ -9,7 +9,7 @@
 	<P>"${message}"</P>
 	<a href="addApplication">Register application</a>
 	<br>
-	<a href="addUser">Register user</a>
+	<a href="addUser">Add User</a>
 	<br>
 	<a href="addEmail">Register EmailId</a>
 	

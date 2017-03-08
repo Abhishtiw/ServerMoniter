@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
+<link rel="stylesheet" href="resources/css/style1.css">
 <style>
 .error {
 	color: red;
@@ -97,67 +99,99 @@ body {
 
 <body>
 
-	<div id="description"></div>
-	<!--container start-->
-	<div id="container">
-		<div id="container_body">
+	<div id="wrapper">
+		<div id="leftWrapper">
+			<div id="listView" class="list">
 
-			<div>
-				<h2 class="form_title">Add Application</h2>
-				<p class="head_para">Enter valid details to Add an Application</p>
+				<li class="list-item-active"><a href="applicationstatus">SERVER MONITOR</a></li>
+				<li><a href="addApplication">Add Application</a></li>
+				<li><a href="addUser">Add User</a></li>
+				<li><a href="displayApplication">View Applications</a></li>
+				<li><a href="displayUser">View Users</a></li>
+				<li><a href="applicationstatus">Status Report</a></li>
+				<li><a href="#">Email History</a></li>
+				<li><a href="signout">Sign Out</a></li>
+
 			</div>
 		</div>
 
-		<!--Form  start-->
-		<div align="center" id="contents"
-			style="margin-left: 20px; margin-right: 20px">
-
-			<form name="appForm" action="saveApplication" method="post"
-				onsubmit="return validateApplication()">
 
 
-				<table style="height: 184px;" width="351" cellspacing="5"
-					cellpadding="5">
-					<tr>
-						<td><label>Application Name:</label></td>
-						<td><input type="text" name="applicationName"
-							onkeyup="checkAppName()" onblur="validateApplication()"></td>
-						<td><div id="appNameError" style="color: red;" class="error"></div></td>
-					</tr>
-					<tr>
-						<td><label>Application Type:</label></td>
+		<div id="rightWrapper">
+			<div id="header">
+				<a id="fullPage" href="#">|||</a>
+			</div>
+			<br> <br> <br>
+			<br> <br>
+			<div id="description"></div>
+			<!--container start-->
+			<div id="container">
+				<div id="container_body">
 
-						<td><input type="text" name="applicationType"
-							onkeyup="checkAppType()" onblur="validateApplication()"></td>
-						<td><div id="appTypeError" style="color: red;"  class="error"></div></td>
-					</tr>
+					<div>
+						<h2 class="form_title">Add Application</h2>
+						<p class="head_para">Enter valid details to Add an Application</p>
+					</div>
+				</div>
 
-					<tr>
-						<td><label>URL:</label></td>
-						<td><input type="text" name="applicationURL"
-							onkeyup="checkUrl()" onblur="validateApplication()"></td>
-						<td><div id="urlError" style="color: red;" class="error"></div></td>
-					</tr>
-					<tr>
-						<td><label>IP Address:</label></td>
-						<td><input type="text" name="internalIpAddress"
-							onkeyup="checkIpAddress()" onblur="validateApplication()"></td>
-						<td><div id="ipError" style="color: red;" class="error"></div></td>
-					</tr>
-				</table>
-				<br>
-				<table style="height: 47px;" width="365">
-					<tr>
-						<td><button type="submit" class="btn btn-info btn-lg"
-								data-toggle="modal" data-target="#myModal">Add
-								Application</button></td>
-						<td><button type="reset" class="btn btn-info btn-lg"
-								data-toggle="modal" data-target="#myModal">Clear</button></td>
-					</tr>
-				</table>
-				<br>
-			</form>
+				<!--Form  start-->
+				<div align="center" id="contents"
+					style="margin-left: 20px; margin-right: 20px">
+
+					<form name="appForm" action="saveApplication" method="post"
+						onsubmit="return validateApplication()">
+
+
+						<table style="height: 184px;" width="351" cellspacing="5"
+							cellpadding="5">
+							<tr>
+								<td><label>Application Name:</label></td>
+								<td><input type="text" name="applicationName"
+									onkeyup="checkAppName()" onblur="validateApplication()"></td>
+								<td><div id="appNameError" style="color: red;"
+										class="error"></div></td>
+							</tr>
+							<tr>
+								<td><label>Application Type:</label></td>
+
+								<td><input type="text" name="applicationType"
+									onkeyup="checkAppType()" onblur="validateApplication()"></td>
+								<td><div id="appTypeError" style="color: red;"
+										class="error"></div></td>
+							</tr>
+
+							<tr>
+								<td><label>URL:</label></td>
+								<td><input type="text" name="applicationURL"
+									onkeyup="checkUrl()" onblur="validateApplication()"></td>
+								<td><div id="urlError" style="color: red;" class="error"></div></td>
+							</tr>
+							<tr>
+								<td><label>IP Address:</label></td>
+								<td><input type="text" name="internalIpAddress"
+									onkeyup="checkIpAddress()" onblur="validateApplication()"></td>
+								<td><div id="ipError" style="color: red;" class="error"></div></td>
+							</tr>
+						</table>
+						<br>
+						<table style="height: 47px;" width="365">
+							<tr>
+								<td><button type="submit" class="btn btn-info btn-sm"
+										data-toggle="modal" data-target="#myModal">Add
+										Application</button></td>
+								<td><button type="reset" class="btn btn-info btn-sm"
+										data-toggle="modal" data-target="#myModal">Clear</button></td>
+							</tr>
+						</table>
+						<br>
+					</form>
+				</div>
+			</div>
 		</div>
-		</div>
+	</div>
+	<script
+		src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+	<script src="resources/js/index.js"></script>
 </body>
 </html>

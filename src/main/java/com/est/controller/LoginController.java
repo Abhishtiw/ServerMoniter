@@ -61,7 +61,7 @@ public class LoginController {
 		
 		if(user!=null){
 			logger.info("---------------completed executing loginValidate  method-------------------- ");
-			return "dashboard";
+			return "redirect:applicationstatus";
 		} else {
 			logger.warn("-------------------invalid identity  ------------------------ ");
 			return "login";
