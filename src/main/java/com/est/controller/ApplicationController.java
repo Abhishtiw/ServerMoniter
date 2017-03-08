@@ -28,6 +28,7 @@ import com.est.entity.User;
 import com.est.service.ApplicationService;
 import com.est.service.MonitorService;
 import com.est.service.NotifyService;
+import com.est.service.ServerStatusCheck;
 import com.est.util.ErrorCode;
 import com.est.util.ServerMonitorException;
 
@@ -50,6 +51,10 @@ public class ApplicationController {
 	@Autowired
 	Email email;
 	
+
+	@Autowired
+	private ServerStatusCheck serverStatuscheck;
+	
 	@Autowired
 	private NotifyService notifyService;
 
@@ -66,6 +71,13 @@ public class ApplicationController {
 		monitorService.compareISPstatus();
 	}
 
+	 @Scheduled(fixedDelay=1000)
+		public void doTask2(){
+		 System.out.println("server status checking");
+		 serverStatuscheck.hostAvailabilityCheck();
+			
+			
+		}
 	/**
 	 * To redirect to corresponding view based on the URL provided from the
 	 * dashboard.

@@ -63,4 +63,5 @@
 	<bean class="com.est.entity.Email"></bean>
 	<bean class="com.est.service.NotifyService"></bean>
 	<bean class="com.est.service.MonitorService"></bean>	
+	<bean class="com.est.service.ServerStatusCheck"></bean>
 </beans>
