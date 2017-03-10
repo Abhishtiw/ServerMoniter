@@ -4,27 +4,32 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-<title>Bootstrap Example</title>
+<title>Dashboard</title>
 <link rel="stylesheet" href="resources/css/style1.css">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<style>
+	a img {
+           height: 50px;
+           width: 150px;
+         }
+	</style>
 </head>
 
 <body>
 	<div id="wrapper">
 		<div id="leftWrapper">
 			<div id="listView" class="list">
-				<li class="list-item-active"><a href="applicationstatus">SERVER
-						MONITOR</a></li>
+				<li class="list-item-active"><a href="applicationstatus"><img src="resources/image/logo.PNG" alt="logo"  ></a></li>
 				<li><a href="addApplication">Add Application</a></li>
+				<li><a href="addAPllicationsFromExcel">Add Applications From External File</a></li>
 				<li><a href="addUser">Add User</a></li>
 				<li><a href="displayApplication">View Applications</a></li>
 				<li><a href="displayUser">View Users</a></li>
 				<!-- <li><a href="#">Application Status</a></li> -->
 				<li><a href="applicationstatus">Status Report</a></li>
-				<li><a href="#">Email History</a></li>
 				<li><a href="signout">Sign Out</a></li>
 			</div>
 		</div>

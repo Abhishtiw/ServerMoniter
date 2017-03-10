@@ -64,4 +64,5 @@
 	<bean class="com.est.service.NotifyService"></bean>
 	<bean class="com.est.service.MonitorService"></bean>	
 	<bean class="com.est.service.ServerStatusCheck"></bean>
+	<bean class="com.est.service.UserXlsx"></bean>
 </beans>

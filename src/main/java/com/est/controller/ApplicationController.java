@@ -2,6 +2,7 @@ package com.est.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.est.dto.ApplicationAndStatusDto;
 import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
 import com.est.entity.ApplicationStatus;
@@ -29,6 +31,7 @@ import com.est.service.ApplicationService;
 import com.est.service.MonitorService;
 import com.est.service.NotifyService;
 import com.est.service.ServerStatusCheck;
+import com.est.service.UserXlsx;
 import com.est.util.ErrorCode;
 import com.est.util.ServerMonitorException;
 
@@ -51,10 +54,12 @@ public class ApplicationController {
 	@Autowired
 	Email email;
 	
+	@Autowired
+	UserXlsx excel;
 
 	@Autowired
 	private ServerStatusCheck serverStatuscheck;
-	
+
 	@Autowired
 	private NotifyService notifyService;
 
@@ -65,19 +70,19 @@ public class ApplicationController {
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
 	}
 
-	@Scheduled(fixedDelay=2000)
-	public void doTask(){
-	 System.out.println("Inside Scheduler");
+	@Scheduled(fixedDelay = 2000)
+	public void doTask() {
+		System.out.println("Inside Scheduler");
 		monitorService.compareISPstatus();
 	}
 
-	 @Scheduled(fixedDelay=1000*30*60)
-		public void doTask2(){
-		 System.out.println("server status checking");
-		 serverStatuscheck.hostAvailabilityCheck();
-			
-			
-		}
+	@Scheduled(fixedDelay = 1000 * 30 * 60)
+	public void doTask2() {
+		System.out.println("server status checking");
+		serverStatuscheck.hostAvailabilityCheck();
+
+	}
+
 	/**
 	 * To redirect to corresponding view based on the URL provided from the
 	 * dashboard.
@@ -109,7 +114,7 @@ public class ApplicationController {
 	@RequestMapping(value = "saveApplication", method = RequestMethod.POST)
 	public String saveApp(@ModelAttribute("application") Application application, ModelMap model) {
 		logger.info("------------------------start executing saveapplication method---------------- ");
-		
+
 		result = appService.addEntity(application);
 		if (result) {
 			logger.info("------------------------execution completde of saveapplication  method---------------- ");
@@ -336,9 +341,9 @@ public class ApplicationController {
 	@RequestMapping(value = "displayApplication")
 	public String displayApp(ModelMap modelMap) {
 		logger.info("------------------------start executing displayApp method---------------- ");
-		
+
 		Application ill = appService.getISPList(Application.class);
-		modelMap.addAttribute("ill",ill);
+		modelMap.addAttribute("ill", ill);
 		List<ApplicationEntity> application = appService.getEntityList(Application.class);
 		if (application == null) {
 
@@ -367,8 +372,6 @@ public class ApplicationController {
 		modelMap.addAttribute("user", user);
 		return "display_user";
 	}
-	
-	
 
 	@RequestMapping(value = "updateUser", method = RequestMethod.POST)
 	public String updateUser(@ModelAttribute("user") User user, ModelMap model) {
@@ -385,15 +388,15 @@ public class ApplicationController {
 
 		}
 	}
-	
+
 	@RequestMapping(value = "applicationstatus")
 	public String displayApplicationstatus(ModelMap modelMap) {
 		logger.info("------------------------start executing displayApplicationstatus method---------------- ");
 		System.out.println("inside application status");
 		Application ill = appService.getISPList(Application.class);
-		modelMap.addAttribute("ill",ill);
+		modelMap.addAttribute("ill", ill);
 		List<ApplicationEntity> applicationStatus = appService.getEntityList(Application.class);
-		//System.out.println(applicationStatus.toString());
+		// System.out.println(applicationStatus.toString());
 		if (applicationStatus == null) {
 			logger.warn("-------------------displayUser method fail------------------------ ");
 			throw new ServerMonitorException(ErrorCode.DISPLAY_ENTITY_ERROR);
@@ -402,33 +405,56 @@ public class ApplicationController {
 		modelMap.addAttribute("applicationStatus", applicationStatus);
 		return "status_Report";
 	}
-	
+
 	/**
 	 * Redirecting to lost_password page
+	 * 
 	 * @return
 	 */
 	@RequestMapping("lost_password")
-	public String lostPassword(){	
+	public String lostPassword() {
 		return "lost_password";
 	}
-	
+
 	/**
 	 * 
 	 * @param emailId
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value="get_password",method=RequestMethod.POST)
-	public String getPassword(@RequestParam("emailId") String emailId,ModelMap model){
-		String password=appService.getPasswordBasedOnEmailId(emailId);
-		notifyService.sendLostPassword(emailId,password);
+	@RequestMapping(value = "get_password", method = RequestMethod.POST)
+	public String getPassword(@RequestParam("emailId") String emailId, ModelMap model) {
+		String password = appService.getPasswordBasedOnEmailId(emailId);
+		notifyService.sendLostPassword(emailId, password);
 		return "redirect:/";
-		
+
+	}
+
+	@RequestMapping(value = "signout", method = RequestMethod.GET)
+	public String signOut() {
+		return "redirect:/";
+	}
+
+	
+	
+	@RequestMapping(value = "addAPllicationsFromExcel", method = RequestMethod.GET)
+	public String AddFromExcel() {
+		return "uploadExcel";
 	}
 	
-	@RequestMapping(value="signout",method=RequestMethod.GET)
-	public String signOut(){
-		return "redirect:/";
+	@RequestMapping(value = "upload", method = RequestMethod.POST)
+	public String saveAppFromExcel(@RequestParam("filepath")String filepath, @RequestParam("sheet") String sheet, ModelMap model) {
+
+		List<Application> applist = excel.excelFile(filepath,sheet);
+		System.out.println("added to db" );
+		Iterator<Application> iterator = applist.iterator();
+		while (iterator.hasNext()) {
+			Application application = iterator.next();
+			result = appService.addEntity(application);
+		}
+				return "redirect:displayApplication";
 	}
+	
+	
 
 }

@@ -29,8 +29,9 @@
 		<div id="leftWrapper">
 			<div id="listView" class="list">
 		
-				<li class="list-item-active"><a href="applicationstatus">SERVER MONITOR</a></li>
+				<li class="list-item-active"><a href="applicationstatus"><img src="resources/image/logo.PNG" alt="logo"  ></a></li>
 				<li><a href="addApplication">Add Application</a></li>
+				<li><a href="addAPllicationsFromExcel">Add Applications From External File</a></li>
 				<li><a href="addUser">Add User</a></li>
 				<li><a href="displayApplication">View Applications</a></li>
 				<li><a href="displayUser">View Users</a></li>
