@@ -15,7 +15,7 @@ import com.est.entity.User;
  */
 public interface ApplicationService {
 	/**
-	 * This method ensures the creation of an appEntity.
+	 * The implementation for this method ensures the creation of an appEntity.
 	 * 
 	 * @param appEntity
 	 * @return true,if an entity is successfully created in the database.
@@ -23,8 +23,8 @@ public interface ApplicationService {
 	public boolean addEntity(ApplicationEntity appEntity);
 
 	/**
-	 * This method ensures the updation of an appEntity,whenever an appEntity
-	 * properties are modified.
+	 * The implementation for this method ensures the updation of an
+	 * appEntity,whenever an appEntity properties are modified.
 	 * 
 	 * @param appEntity
 	 * @return true,if an entity is successfully updated with new modifications
@@ -33,7 +33,7 @@ public interface ApplicationService {
 	public boolean updateEntity(ApplicationEntity appEntity);
 
 	/**
-	 * This method ensures the deletion of an appEntity.
+	 * The implementation for this method ensures the deletion of an appEntity.
 	 * 
 	 * @param entityClass
 	 * @param entityId
@@ -42,8 +42,8 @@ public interface ApplicationService {
 	public boolean deleteEntity(Class<? extends ApplicationEntity> entityClass, int entityId);
 
 	/**
-	 * This method is responsible to generate/fetch all the records from the
-	 * repository.
+	 * The implementation for this method is responsible to generate/fetch all
+	 * the records from the repository.
 	 * 
 	 * @param entityClass
 	 * @return a List of ApplicationEntity.
@@ -51,22 +51,60 @@ public interface ApplicationService {
 	public List<ApplicationEntity> getEntityList(Class<? extends ApplicationEntity> entityClass);
 
 	/**
-	 * This method fetches a particular entity based on appId provided.
+	 * The implementation for this method fetches a particular entity based on
+	 * appId provided.
 	 * 
 	 * @param entityClass
 	 * @param appId
 	 * @return ApplicationEntity
 	 */
 	public ApplicationEntity getEntityByID(Class<? extends ApplicationEntity> entityClass, int appId);
-	
+
+	/**
+	 * The implementation for this method returns the user record corresponding
+	 * to the provided username and password.
+	 * 
+	 * @param userName
+	 * @param password
+	 * @return user record if given username and password is valid ,else it
+	 *         returns null.
+	 */
 	public User getNamePassword(String userName, String password);
-	
+
+	/**
+	 * The implementation for this method returns an ISP record from the
+	 * database.
+	 * 
+	 * @param class1
+	 * @return Application record
+	 */
 	public Application getISPList(Class<Application> class1);
-	
+
+	/**
+	 * The implementation for this method returns the password based on the
+	 * provided email Id.
+	 * 
+	 * @param emailId
+	 * @return password ,if the given email Id is correct else it returns null.
+	 */
 	public String getPasswordBasedOnEmailId(String emailId);
-	
+
+	/**
+	 * The implementation for this method deletes the Email record, whenever the
+	 * user related to that email Id gets deleted.
+	 * 
+	 * @param mailId
+	 * @return true,if Email record is deleted or else it returns false.
+	 */
 	public boolean deleteEmailRecord(String mailId);
-	
+
+	/**
+	 * The implementation for this method gets the Complete list of applications
+	 * appended with the corresponding status of eac application.
+	 * 
+	 * @return List of ApplicationAndStatusDto records.
+	 */
 	public List<ApplicationAndStatusDto> getListApplicationAndStatus();
+
 
 }

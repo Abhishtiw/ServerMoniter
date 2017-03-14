@@ -10,27 +10,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<style>
-	a img {
-           height: 50px;
-           width: 150px;
-         }
-	</style>
+<style>
+a img {
+	height: 50px;
+	width: 150px;
+}
+</style>
 </head>
-
 <body>
 	<div id="wrapper">
 		<div id="leftWrapper">
 			<div id="listView" class="list">
-				<li class="list-item-active"><a href="applicationstatus"><img src="resources/image/logo.PNG" alt="logo"  ></a></li>
-				<li><a href="addApplication">Add Application</a></li>
-				<li><a href="addAPllicationsFromExcel">Add Applications From External File</a></li>
-				<li><a href="addUser">Add User</a></li>
-				<li><a href="displayApplication">View Applications</a></li>
-				<li><a href="displayUser">View Users</a></li>
-				<!-- <li><a href="#">Application Status</a></li> -->
-				<li><a href="applicationstatus">Status Report</a></li>
-				<li><a href="signout">Sign Out</a></li>
+				<ul>
+					<li class="list-item-active"><a href="applicationstatus"><img
+							src="resources/image/logo.PNG" alt="logo"></a></li>
+					<li><a href="addApplication">Add Application</a></li>
+					<li><a href="addApplicationsFromExcel">Add Applications
+							From External File</a></li>
+					<li><a href="addUser">Add User</a></li>
+					<li><a href="displayApplication">View Applications</a></li>
+					<li><a href="displayUser">View Users</a></li>
+					<!-- <li><a href="#">Application Status</a></li> -->
+					<li><a href="applicationstatus">Status Report</a></li>
+					<li><a href="signout">Sign Out</a></li>
+				</ul>
 			</div>
 		</div>
 		<div id="rightWrapper">
@@ -93,13 +96,9 @@
 						</c:forEach>
 					</c:if>
 			</table>
-
-
 		</div>
 		<!-- <div align="right"> -->
-
 		<form></form>
-
 		<script
 			src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script>
@@ -137,7 +136,6 @@
 		</center>
 		<script
 			src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-
 		<script src="resources/js/index.js"></script>
 </body>
 </html>

@@ -15,8 +15,10 @@
   <div id="wrapper">
   <div id="leftWrapper">
       <div id="listView" class="list">
+      <ul>
         <li class="list-item-active"><a href="#">Home</a></li>
         <li><a href="addApplication">Add Application</a></li>
+        <li><a href="addApplicationsFromExcel">Add Applications From External File</a></li>
         <li><a href="addUser">Register User</a></li>
         <li><a href="displayApplication">View Applications</a></li>
         <li><a href="displayUser">View Users</a></li>
@@ -24,14 +26,15 @@
 		  <li><a href="applicationstatus">Status Report</a></li>
         <li><a href="#">Email History</a></li>
 		  <li><a href="signout">Sign Out</a></li>
+		  </ul>
       </div>
     </div>
 
-	
+	</div>
 	 
-     <div id="rightWrapper">
+    <!--   <div id="rightWrapper">
       <div id="header"><a id="fullPage" href="#">|||</a></div>
-     <!-- <div id="contentWrapper">
+    <div id="contentWrapper">
         <article id="showCase">
           <div class="article-header">Some of my other designs</div>
           <section>

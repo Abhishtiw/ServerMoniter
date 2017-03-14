@@ -28,7 +28,6 @@
 	<!--container start-->
 	<div id="container">
 		<div id="container_body">
-
 			<div>
 				<h2 class="form_title">Application Details</h2>
 				<p class="head_para">Enter valid details to update Application</p>
@@ -37,11 +36,8 @@
 		<!--Form  start-->
 		<div align="center" id="contents"
 			style="margin-left: 20px; margin-right: 20px">
-
 			<form name="editAppForm" action="update_application" method="post">
 				<!-- onsubmit="return validateApplication()" -->
-
-
 				<table style="height: 306px;" width="351" cellspacing="5"
 					cellpadding="5">
 					<tr>
@@ -74,20 +70,28 @@
 							value="<c:out value="${application.applicationType}"/>" /></td>
 						<td><div id="appTypeError" class="error"></div></td>
 					</tr>
-
+					<tr>
+						<td>Set application active :<label class="error">*</label></td>
+						<td><input type="radio" id="true" name="active" value="1" />
+							True<br> <input type="radio" id="false" name="active"
+							value="0" /> False<br></td>
+						<!-- 	<td><span style="color: red;" id="emailPropertyError"
+							class="error"> </span></td> -->
+					</tr>
 					<tr>
 						<td><input type="hidden" name="oldStatusCode"
-							value="<c:out value="${application.oldStatusCode}"/>" readonly/></td>
+							value="<c:out value="${application.oldStatusCode}"/>" readonly /></td>
 						<td><div id="ipError" class="error"></div></td>
 					</tr>
 					<tr>
 						<td><input type="hidden" name="newStatusCode"
-							value="<c:out value="${application.newStatusCode}"/>" readonly/></td>
+							value="<c:out value="${application.newStatusCode}"/>" readonly /></td>
 						<td><div id="ipError" class="error"></div></td>
 					</tr>
 					<tr>
 						<td><input type="hidden" name="responseGeneratedTime"
-							value="<c:out value="${application.responseGeneratedTime}"/>" readonly/></td>
+							value="<c:out value="${application.responseGeneratedTime}"/>"
+							readonly /></td>
 						<td><div id="ipError" class="error"></div></td>
 					</tr>
 					<tr>
@@ -107,6 +111,6 @@
 				</table>
 			</form>
 		</div>
-		</div>
+	</div>
 </body>
 </html>

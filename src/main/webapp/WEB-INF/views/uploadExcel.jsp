@@ -18,7 +18,6 @@
 			<tr>
 			<td><label>Sheet name:</label></td>
 				<td><input type="text" name="sheet" /></td>
-				<br />
 			</tr>
 			<tr>
 				<td><input type="submit" value="select" /></td>

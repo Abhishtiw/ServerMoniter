@@ -27,6 +27,7 @@ public class Application extends ApplicationEntity {
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private Date responseGeneratedTime;
 	private int emailId;
+	private boolean active;
 
 	public int getApplicationId() {
 		return applicationId;
@@ -100,14 +101,21 @@ public class Application extends ApplicationEntity {
 		this.emailId = emailId;
 	}
 
+	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	@Override
 	public String toString() {
 		return "Application [applicationId=" + applicationId + ", applicationName=" + applicationName
 				+ ", internalIpAddress=" + internalIpAddress + ", applicationURL=" + applicationURL
 				+ ", applicationType=" + applicationType + ", oldStatusCode=" + oldStatusCode + ", newStatusCode="
-				+ newStatusCode + ", responseGeneratedTime=" + responseGeneratedTime + ", emailId=" + emailId + "]";
+				+ newStatusCode + ", responseGeneratedTime=" + responseGeneratedTime + ", emailId=" + emailId
+				+ ", active=" + active + "]";
 	}
-	
-	
-
 }

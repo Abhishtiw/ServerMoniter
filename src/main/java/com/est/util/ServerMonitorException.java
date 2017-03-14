@@ -6,10 +6,8 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import com.est.dao.ApplicationDaoImpl;
-
 public class ServerMonitorException extends RuntimeException {
-	
+
 	Logger logger = Logger.getLogger(ServerMonitorException.class);
 
 	/**
@@ -28,16 +26,16 @@ public class ServerMonitorException extends RuntimeException {
 		loadProperties();
 		System.out.println(props.get(code));
 	}
-	
+
 	/**
-	 * constructor which takes error code and a throwable object 
+	 * constructor which takes error code and a throwable object
 	 * 
-	 *  logs the throwable object 
+	 * logs the throwable object
 	 * 
 	 * @param code
 	 * @param e
 	 */
-	public ServerMonitorException(String code, Throwable e){
+	public ServerMonitorException(String code, Throwable e) {
 		loadProperties();
 		System.out.println(props.get(code));
 		logger.warn(e);

@@ -8,6 +8,7 @@ import java.net.URLConnection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 import javax.transaction.Transactional;
 
@@ -38,6 +39,8 @@ public class MonitorService {
 
 	private List<ApplicationEntity> appList;
 
+	private static final Logger logger = Logger.getLogger(MonitorService.class);
+
 	/**
 	 * Getting the new status of application by establishing the new connection
 	 * to the coressponding URL provided.
@@ -48,11 +51,12 @@ public class MonitorService {
 	 * @throws IOException
 	 */
 	private int generateResponseCode(String appUrl) {
+		logger.info("Method generateResponseCode Execution Starts");
 		int responseCode;
 		String responseMsg;
 		if ((!appUrl.equals(null)) && (!appUrl.equals(" "))) {
-			/* to avoid SSL certification*/
-			appUrl = appUrl.replaceFirst("^https", "http"); 
+			/* to avoid SSL certification */
+			appUrl = appUrl.replaceFirst("^https", "http");
 			try {
 				URL url = new URL(appUrl);// MalformedURLException
 				URLConnection urlConnection = url.openConnection();// IOException
@@ -61,20 +65,18 @@ public class MonitorService {
 				/* Getting response code by hitting web application */
 				responseCode = connection.getResponseCode();
 				responseMsg = connection.getResponseMessage();
-				System.out.println("Response message>>>>>>>>>>>>>>>>>"+responseMsg);
+				logger.info("Printing Response Message : " + responseMsg);
 				return responseCode;
 			} catch (MalformedURLException e) {
-				System.out.println("Invalid URL");
-				System.out.println(e);
+				logger.warn("Invalid URL");
 				return ErrorCode.MALURL_INVALID_URL_EXCEPTION_CODE;
 			} catch (IOException e) {
-				System.out.println("cannot able to establish URL connection");
-				System.out.println(e);
+				logger.warn("Unable To Establish Connection");
 				return ErrorCode.URL_IOEXCEPTION_CODE;
 			}
 		} else {
-			System.out.println("Provided URL is null or empty !!");
-			return 0;
+			logger.error("Provided URL Is Null Or Empty");
+			return ErrorCode.EMPTY_URL_CODE;
 		}
 	}
 
@@ -83,100 +85,131 @@ public class MonitorService {
 	 */
 	@Transactional
 	public void compareApplicationStatus() {
+		logger.info("Method compareApplicationStatus Execution Starts");
 		boolean sendMail;
 		appList = appDao.getEntityList(Application.class);
+		logger.info("Getting List Of Applications From The Database");
 		if (appList.size() > 0) {
 			Iterator<ApplicationEntity> appIterator = appList.iterator();
+			logger.info("Iterating Each And Every Application From The List Of Applications");
 			sendMail = false;
 			while (appIterator.hasNext()) {
 				application = (Application) appIterator.next();
-				int newStatus = application.getNewStatusCode();
-				/*
-				 * Calling generateResponseCode(String url) method by passing
-				 * the URL
-				 */
-				int newGeneratedStatus = generateResponseCode(application.getApplicationURL());
-				//Comparing mechanism for status
-				if (newStatus != newGeneratedStatus) { 
-					System.out.println("Inside IF block");
-					sendMail = true;
-					application.setResponseGeneratedTime(new Date());
-					application.setOldStatusCode(newStatus);
-					application.setNewStatusCode(newGeneratedStatus);
-					/* updating the database */
-					appDao.updateEntity(application);
-					System.out.println("update completed");
+				if (application.isActive() == true) {
+					logger.info("Getting New Status Code From The Application");
+					int newStatus = application.getNewStatusCode();
+					/*
+					 * Calling generateResponseCode(String url) method by
+					 * passing the URL
+					 */
+					logger.info("Getting New Generated Response Code By Passing URL To The Application");
+					int newGeneratedStatus = generateResponseCode(application.getApplicationURL());
+					// Comparing mechanism for status
+					logger.info("Comparing The Status Of Application");
+					if (newStatus != newGeneratedStatus) {
+						logger.info("Inside if Block For Comparing Status");
+						System.out.println("Inside IF block");
+						sendMail = true;
+						logger.info("Initialize senEmail As True Innitially");
+						application.setResponseGeneratedTime(new Date());
+						logger.info("Setting Response Generated Time");
+						application.setOldStatusCode(newStatus);
+						logger.info("Setting Old Status Of The Application By Passing New Status");
+						application.setNewStatusCode(newGeneratedStatus);
+						logger.info("Setting New Status Of The Application By Passing New Generated Status");
+						/* updating the database */
+						appDao.updateEntity(application);
+						logger.info("Updating The Application Entity With The Above Values");
+						System.out.println("update completed");
+						logger.info("Updating Application Entity Completed");
+					}
 				}
 			}
 			if (sendMail) {
 				notifyService.sendMail();// Calling Mail functionality method
+				logger.info("sendEmail = true, Calling The sendMail() Method From notifyService");
 			} else {
-				System.out.println("Continue Monitoring The Server..");
+				logger.warn("sendEmail = false, Hence No Need Of Sending Email, Continuing Monitoring The Server");
 			}
 		} else {
-			System.out.println("Currently no application is Running on server !!");
+			logger.error("Currently No Application Is Running On The Server");
 		}
 	}
-	
+
+	/**
+	 * Checks the network status of ISP based on the IP address
+	 * 
+	 * @param ipAddr
+	 * @return the status code
+	 */
 	public int checkNetworkStatus(String ipAddr) {
-		// logger.info("checkNetworkStatus>>[" + ipAddr + "]");
+		logger.info("Method checkNetworkStatus Execution Starts");
 		try {
 			String cmd = "";
+			logger.info(
+					"Trying To Check The Operating System Name By Using 'if' Block And Then Based On The OS Trying To Ping By Using OS Specfic Command");
 			if (System.getProperty("os.name").startsWith("Windows")) {
 				// For Windows
 				cmd = "ping -n 1 " + ipAddr;
+				logger.info("Operation System Is Windows, Hence Command Is 'ping -n + ipAddress' For Pinging");
 			} else {
 				// For Linux and OSX
 				cmd = "ping -c 1 " + ipAddr;
+				logger.info("Operation System is linux, Hence Command Is 'ping -c + ipAddress' For Pinging");
 			}
-
 			Process myProcess = Runtime.getRuntime().exec(cmd);
+			logger.info("Executing The Command Based On OS");
 			myProcess.waitFor();
-			// logger.info("checkNetworkStatus>>myProcess.exitValue()>>>[" +
-			// myProcess.exitValue() + "]");
+			logger.info("checkNetworkStatus------->>myProcess.exitValue()>>>[" + myProcess.exitValue() + "]");
 			if (myProcess.exitValue() == 0) {
 				return 200;
 			} else {
-				// logger.info(ipAddr + "is Offline");
+				logger.info(ipAddr + "is Offline");
 				return 404;
 			}
-
 		} catch (Exception e) {
-			// logger.error("testing of ip failed due to exception: " + e);
+			logger.error("Testing Of ip Failed Due To Exception: " + e);
 			e.printStackTrace();
 			return 404;
-
 		}
 	}
 
+	/**
+	 * To compare and update the new status of an ISP.
+	 */
 	public void compareISPstatus() {
+		logger.info("Method compareISPstatus Execution Starts");
 		Application app = appDao.getISPList(Application.class);
+		logger.info("Getting The List Of ISP's From the Database");
 		if (app != null) {
-
+			logger.info("Checking The List Of ISP's For Null");
 			int newStatus = app.getNewStatusCode();
 			int networkStatus = app.getNewStatusCode();
 			networkStatus = checkNetworkStatus(String.valueOf(app.getApplicationURL()));
 			System.out.println(networkStatus);
-
+			logger.info("Printing Network Status : " + networkStatus);
 			if (networkStatus == 200) {
-				System.out.println("internet service provider is working");
+				logger.info("Checking For The Network Status Inside 'if' Block");
+				logger.info("The network status code is " + networkStatus + "ISP is working");
+				logger.info("Calling compareApplicationStatus method");
 				compareApplicationStatus();
 			}
-
 			if (newStatus != networkStatus) {
+				logger.info(
+						"Inside 'if' Block For Comparing The Status, Means If newStatus Is Not Equal To networkStatus Then Setting oldStatus As newStatus And newStatus As networkStatus To The Application Object");
 				app.setResponseGeneratedTime(new Date());
 				app.setOldStatusCode(newStatus);
 				app.setNewStatusCode(networkStatus);
 				appDao.updateEntity(app);
-				notifyService.sendISPErrorMail();// Calling Mail functionality
-													// method
+				logger.info("Updating The Application Entity");
+				/* Calling Mail functionality Method */
+				notifyService.sendISPErrorMail();
+				logger.info("Calling sendISPErrorMail Method On notifyService Object");
 			} else {
-				System.out.println("Continue Monitoring ILL...");
+				logger.info("Continue Monitoring The ILL");
 			}
-		}else{
-			System.out.println("currently no IIL info is present in the database !");
+		} else {
+			logger.info("Currently No IIL Info Is Present In The Database !!");
 		}
-
 	}
-
 }

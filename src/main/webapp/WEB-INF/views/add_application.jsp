@@ -102,17 +102,19 @@ body {
 	<div id="wrapper">
 		<div id="leftWrapper">
 			<div id="listView" class="list">
-
-				<li class="list-item-active"><a href="applicationstatus"><img src="resources/image/logo.PNG" alt="logo"  ></a></li>
-				<li><a href="addApplication">Add Application</a></li>
-				<li><a href="addAPllicationsFromExcel">Add Applications From External File</a></li>
-				<li><a href="addUser">Add User</a></li>
-				<li><a href="displayApplication">View Applications</a></li>
-				<li><a href="displayUser">View Users</a></li>
-				<li><a href="applicationstatus">Status Report</a></li>
-				<li><a href="#">Email History</a></li>
-				<li><a href="signout">Sign Out</a></li>
-
+				<ul>
+					<li class="list-item-active"><a href="applicationstatus"><img
+							src="resources/image/logo.PNG" alt="logo"></a></li>
+					<li><a href="addApplication">Add Application</a></li>
+					<li><a href="addApplicationsFromExcel">Add Applications
+							From External File</a></li>
+					<li><a href="addUser">Add User</a></li>
+					<li><a href="displayApplication">View Applications</a></li>
+					<li><a href="displayUser">View Users</a></li>
+					<li><a href="applicationstatus">Status Report</a></li>
+					<li><a href="#">Email History</a></li>
+					<li><a href="signout">Sign Out</a></li>
+				</ul>
 			</div>
 		</div>
 
@@ -122,8 +124,7 @@ body {
 			<div id="header">
 				<a id="fullPage" href="#">|||</a>
 			</div>
-			<br> <br> <br>
-			<br> <br>
+			<br> <br> <br> <br> <br>
 			<div id="description"></div>
 			<!--container start-->
 			<div id="container">
@@ -134,15 +135,12 @@ body {
 						<p class="head_para">Enter valid details to Add an Application</p>
 					</div>
 				</div>
-
 				<!--Form  start-->
 				<div align="center" id="contents"
 					style="margin-left: 20px; margin-right: 20px">
 
 					<form name="appForm" action="saveApplication" method="post"
 						onsubmit="return validateApplication()">
-
-
 						<table style="height: 184px;" width="351" cellspacing="5"
 							cellpadding="5">
 							<tr>
@@ -160,7 +158,6 @@ body {
 								<td><div id="appTypeError" style="color: red;"
 										class="error"></div></td>
 							</tr>
-
 							<tr>
 								<td><label>URL:</label></td>
 								<td><input type="text" name="applicationURL"
@@ -192,7 +189,6 @@ body {
 	</div>
 	<script
 		src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-
 	<script src="resources/js/index.js"></script>
 </body>
 </html>
