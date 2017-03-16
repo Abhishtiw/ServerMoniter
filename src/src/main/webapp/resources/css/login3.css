@@ -1,0 +1,18 @@
+@CHARSET "ISO-8859-1";
+
+body {
+	background-color: #d7eef7;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+.panel-default {
+	opacity: 5;
+	margin-top: 30px;
+}
+
+.form-group.last {
+	margin-bottom: 0px;
+}
