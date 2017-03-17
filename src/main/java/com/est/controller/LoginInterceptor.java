@@ -117,7 +117,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		 * 
 		 * 
 		 */
-		if (!uri.endsWith("/") && !uri.endsWith("/validateLogin")) {
+		if (!uri.endsWith("/") && !uri.endsWith("/validateLogin") && !uri.endsWith("/signUp")
+				&& !uri.endsWith("/servermonitor/registerMe") && !uri.endsWith("/servermonitor/lostPassword")
+				&& !uri.endsWith("/servermonitor/get_password")) {
 			logger.info("Executing Login Interceptor Logic");
 			User userData = (User) request.getSession().getAttribute("user");
 			logger.info("Getting The Value From The Session Which Is Already Existed");
@@ -127,8 +129,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 				logger.warn("Redirected To Login Page");
 				return false;
 			} else {
-				logger.info("Session Contains Value");
-				logger.info("Already Logged In!!!!!, No Need To Login Again");
+				logger.info("Session Contains Value.Already Logged In!!!!!, No Need To Login Again");
 				return true;
 			}
 		}

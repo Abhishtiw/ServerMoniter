@@ -15,15 +15,10 @@ import com.est.service.ApplicationService;
 
 @Controller
 public class LoginController {
-
 	private static final Logger logger = Logger.getLogger(LoginController.class);
-	
+
 	@Autowired
 	private ApplicationService applicationService;
-
-	/*public void setHrService(ApplicationService applicationService) {
-		this.applicationService = applicationService;
-	}*/
 
 	/**
 	 * Returns to login page
@@ -33,10 +28,9 @@ public class LoginController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String login() {
 		logger.info("Method login Execution Starts");
-
 		return "login";
-
 	}
+
 	/**
 	 * This method validates for the authorized user,if yes ,then add that user
 	 * to the current session Else redirects again to login page
@@ -51,18 +45,15 @@ public class LoginController {
 	public String loginValidate(@RequestParam("userName") String userName, @RequestParam("password") String password,
 			HttpSession session, HttpServletRequest request) {
 		logger.info("Method loginValidate Execution Starts");
-
 		User user = applicationService.getNamePassword(userName, password);
 		logger.info("Getting username And password From The User");
-
 		if (user != null) {
-			request.getSession().setAttribute("user", user);
 			logger.info("Preparing The Session Object With User Data");
+			request.getSession().setAttribute("user", user);
 			logger.info("Completed Executing loginValidate  Method");
 			return "redirect:applicationstatus";
 		} else {
 			logger.error("Invalid User Credentials");
-			logger.warn("Invalid Identity");
 			return "login";
 		}
 	}

@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-<title>Dashboard</title>
+<title>ApplicationHealthStatusReport</title>
 <link rel="stylesheet" href="resources/css/style1.css">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -51,68 +51,36 @@ a img {
 				<label></label>
 			</div>
 			<br> <br> <br> <br> <br>
-			<h2>Report</h2>
+			<h2>Application Health Status Report</h2>
 			<table class="table table-bordred table-striped">
 				<thead>
 					<tr>
+						<th>Application Id</th>
 						<th>Application Name</th>
-						<th>Application Type</th>
-						<th>URL</th>
-						<th>IP Address</th>
-						<th>Response Code</th>
-						<th>Response generated time</th>
-						<th>Status</th>
+						<th>Current Status</th>
+						<th>Email</th>
+						<th>Cc(Mail)</th>
+						<th>To(Mail)</th>
+						<th>Response Generated Time</th>
+						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td><c:out value="${ill.applicationName}" /></td>
-						<td><c:out value="${ill.applicationType}" /></td>
-						<td><c:out value="${ill.applicationURL}" /></td>
-						<td><c:out value="${ill.internalIpAddress}" /></td>
-						<td><c:out value="${ill.newStatusCode}" /></td>
-						<td><c:out value="${ill.responseGeneratedTime}" /></td>
-						<c:choose>
-							<c:when
-								test="${(ill.newStatusCode >= 200) && (ill.newStatusCode <= 399)}">
-								<td><span title="ISP Up"><img alt="Up" src="resources/image/up.png"></span></td>
-							</c:when>
-							<c:otherwise>
-								<td><span title="ISP Down"><img alt="Down" src="resources/image/down.png"></span></td>
-							</c:otherwise>
-						</c:choose>
-					</tr>
-					<c:if
-						test="${(ill.newStatusCode >= 200) && (ill.newStatusCode <= 399)}">
-						<c:forEach items="${applicationStatus}" var="application">
-							<tr>
-								<td><c:out value="${application.applicationName}" /></td>
-								<td><c:out value="${application.applicationType}" /></td>
-								<td><c:out value="${application.applicationURL}" /></td>
-								<td><c:out value="${application.internalIpAddress}" /></td>
-								<td><span title="<c:out value="${application.message}" />"><c:out
-											value="${application.newStatusCode}" /></span></td>
-								<td><c:out value="${application.responseGeneratedTime}" /></td>
-								<c:choose>
-									<c:when
-										test="${(application.newStatusCode >= 200) && (application.newStatusCode <= 399)}">
-										<td><span
-											title="<c:out value="${application.message}" />"><img
-												alt="Up" src="resources/image/up.png"></span></td>
-									</c:when>
-									<c:otherwise>
-										<td><span
-											title="<c:out value="${application.message}" />"><img
-												alt="Down" src="resources/image/down.png"></span></td>
-									</c:otherwise>
-								</c:choose>
-							</tr>
-						</c:forEach>
-					</c:if>
+					<c:forEach items="${applicationHealthStatusReport}"
+						var="application">
+						<tr>
+							<td><c:out value="${application.applicationId}" /></td>
+							<td><c:out value="${application.applicationName}" /></td>
+							<td><c:out value="${application.currentStatus}" /></td>
+							<td><c:out value="${application.emailId}" /></td>
+							<td><c:out value="${application.emailCc}" /></td>
+							<td><c:out value="${application.emailTo}" /></td>
+							<td><c:out value="${application.generatedTime}" /></td>
+							<td><c:out value="${application.message}" /></td>
+						</tr>
+					</c:forEach>
 			</table>
 		</div>
-		<!-- <div align="right"> -->
-		<form></form>
 		<script
 			src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script>
@@ -153,4 +121,3 @@ a img {
 		<script src="resources/js/index.js"></script>
 </body>
 </html>
-

@@ -3,7 +3,7 @@
  */
 function validateUser() {
 	var fv = true;
-	var lettersReg = /^[A-Za-z]+$/;
+	var lettersReg = /^[a-zA-Z ]*$/;
 	var emailreg = /\S+@\S+\.\S+/;
 	
 	var firstname = document.registerUser.userName.value;

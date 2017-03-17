@@ -1,7 +1,8 @@
 package com.est.entity;
 
-import javax.persistence.NamedQuery;
-
+/**
+ * This class acts like parent for all the declared entities in this project
+ */
 public class ApplicationEntity {
 
 }

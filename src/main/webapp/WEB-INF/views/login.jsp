@@ -12,18 +12,19 @@
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<link href="${pageContext.request.contextPath}/resources/css/login3.css"
+<link href="${pageContext.request.contextPath}/resources/css/login.css"
 	rel="stylesheet" type="text/css" />
 
 <script type="text/javascript"
-	src="${pageContext.request.contextPath}/resources/js/login3.js">
+	src="${pageContext.request.contextPath}/resources/js/login.js">
 	
 </script>
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-md-4 col-md-offset-7">
+        <div class="col-md-4 col-md-offset-7" style="margin-left: 150.828; margin-left: 380px; margin-top: 80px">
+    
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="glyphicon glyphicon-lock"></span> Login</div>
@@ -63,13 +64,11 @@
                     </div>
                     </form>
                 </div>
-					<!-- <div class="panel-footer">
-						Not Registred? <a href="addUser">Register here</a>
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="lost_password">Lost
+					<div class="panel-footer">
+						Not Registred? <a href="signUp">Register here</a>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <a href="lostPassword">Lost
 							Password</a>
-					</div> -->
-
-
+					</div>
 				</div>
         </div>
     </div>

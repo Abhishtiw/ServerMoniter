@@ -7,8 +7,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 public class ServerMonitorException extends RuntimeException {
-
-	Logger logger = Logger.getLogger(ServerMonitorException.class);
+	private static final Logger logger = Logger.getLogger(ServerMonitorException.class);
 
 	/**
 	 * properties file reference to load properties from external file

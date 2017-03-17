@@ -1,28 +1,37 @@
 package com.est.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * This class is meant for adding user. Since an user visits the status of the
+ * application.
+ *
+ */
 @Entity
 @Table(name = "user")
 public class User extends ApplicationEntity {
+
+	/* declaring variables required to add an user*/
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int userId;
-
+	@Column(name = "userId")
+	private int id;
 	private String userName;
 	private String emailId;
 	private String password;
 
-	public int getUserId() {
-		return userId;
+	/* setters and getters for the variables declared above*/
+	public int getId() {
+		return id;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getUserName() {
@@ -49,9 +58,9 @@ public class User extends ApplicationEntity {
 		this.password = password;
 	}
 
+	// overriding toString method
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", userName=" + userName + ", emailId=" + emailId + ", password=" + password
-				+ "]";
+		return "User [id=" + id + ", userName=" + userName + ", emailId=" + emailId + ", password=" + password + "]";
 	}
 }

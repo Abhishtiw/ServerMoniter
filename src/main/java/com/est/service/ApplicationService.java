@@ -75,19 +75,20 @@ public interface ApplicationService {
 	 * The implementation for this method returns an ISP record from the
 	 * database.
 	 * 
-	 * @param class1
 	 * @return Application record
 	 */
-	public Application getISPList(Class<Application> class1);
+	public Application getISP();
 
 	/**
-	 * The implementation for this method returns the password based on the
-	 * provided email Id.
+	 * The implementation for this method returnsan Entity based on the provided
+	 * email Id.
 	 * 
-	 * @param emailId
-	 * @return password ,if the given email Id is correct else it returns null.
+	 * @param entityClass
+	 * @param emaiId
+	 * @return ApplicationEntity ,if the given email Id is correct else it
+	 *         returns null.
 	 */
-	public String getPasswordBasedOnEmailId(String emailId);
+	public ApplicationEntity getEntityBasedOnEmailId(Class<? extends ApplicationEntity> entityClass, String emaiId);
 
 	/**
 	 * The implementation for this method deletes the Email record, whenever the
@@ -105,6 +106,4 @@ public interface ApplicationService {
 	 * @return List of ApplicationAndStatusDto records.
 	 */
 	public List<ApplicationAndStatusDto> getListApplicationAndStatus();
-
-
 }

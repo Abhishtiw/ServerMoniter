@@ -18,13 +18,11 @@
       <ul>
         <li class="list-item-active"><a href="#">Home</a></li>
         <li><a href="addApplication">Add Application</a></li>
-        <li><a href="addApplicationsFromExcel">Add Applications From External File</a></li>
         <li><a href="addUser">Register User</a></li>
         <li><a href="displayApplication">View Applications</a></li>
         <li><a href="displayUser">View Users</a></li>
         <li><a href="#">Application Status</a></li>
 		  <li><a href="applicationstatus">Status Report</a></li>
-        <li><a href="#">Email History</a></li>
 		  <li><a href="signout">Sign Out</a></li>
 		  </ul>
       </div>

@@ -7,6 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 <link rel="stylesheet" href="resources/css/style1.css">
+<jsp:include page="dashboard.jsp" />
 <style>
 .error {
 	color: red;
@@ -94,42 +95,49 @@ body {
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript"
-	src="${pageContext.request.contextPath}/resources/js/add_application.js"></script>
+	src="resources/js/add_application.js"></script>
 </head>
 
 <body>
 
-	<div id="wrapper">
+	 <div id="wrapper">
 		<div id="leftWrapper">
 			<div id="listView" class="list">
-				<ul>
-					<li class="list-item-active"><a href="applicationstatus"><img
-							src="resources/image/logo.PNG" alt="logo"></a></li>
+				<ul style="padding-top: -;padding-left: 0px;">
+					<li class="list-item-active" style="height: 60px;"><a href="applicationstatus" style="padding-right: 2px;
+    padding-top: 0px;
+    padding-left: -;
+    border-bottom-width: 3px;
+    padding-bottom: 2px;
+    height: 60px;
+    padding-left: 2px;
+    padding-left: 0px;border-top-width: 0px;"><img src="resources/image/estuate.jpg" alt="logo" style="
+    padding-left: 0;
+    border-right-width: 5px;
+    padding-right: 5px;
+    width: 215px;
+    height: 60px;
+    "></a>::after</li>
 					<li><a href="addApplication">Add Application</a></li>
-					<li><a href="addApplicationsFromExcel">Add Applications
-							From External File</a></li>
 					<li><a href="addUser">Add User</a></li>
 					<li><a href="displayApplication">View Applications</a></li>
 					<li><a href="displayUser">View Users</a></li>
-					<li><a href="applicationstatus">Status Report</a></li>
-					<li><a href="#">Email History</a></li>
+					<li><a href="applicationhealthstatus">Health Status Report</a></li>
 					<li><a href="signout">Sign Out</a></li>
 				</ul>
 			</div>
 		</div>
-
-
-
 		<div id="rightWrapper">
-			<div id="header">
+			<div id="header" style="border-bottom-width:1px; " >
 				<a id="fullPage" href="#">|||</a>
+				<label></label>
 			</div>
+			
 			<br> <br> <br> <br> <br>
 			<div id="description"></div>
 			<!--container start-->
 			<div id="container">
 				<div id="container_body">
-
 					<div>
 						<h2 class="form_title">Add Application</h2>
 						<p class="head_para">Enter valid details to Add an Application</p>
@@ -146,7 +154,7 @@ body {
 							<tr>
 								<td><label>Application Name:</label></td>
 								<td><input type="text" name="applicationName"
-									onkeyup="checkAppName()" onblur="validateApplication()"></td>
+									onkeyup="checkAppName()" onblur="validateApplication()" autofocus></td>
 								<td><div id="appNameError" style="color: red;"
 										class="error"></div></td>
 							</tr>
@@ -175,8 +183,13 @@ body {
 						<table style="height: 47px;" width="365">
 							<tr>
 								<td><button type="submit" class="btn btn-info btn-sm"
-										data-toggle="modal" data-target="#myModal">Add
-										Application</button></td>
+										data-toggle="modal" data-target="#myModal">
+										<a href="addApplicationsFromExcel">Import From Excel Sheet</a>
+									</button></td>
+								<td><button type="submit" class="btn btn-info btn-sm"
+										data-toggle="modal" data-target="#myModal">
+										Add
+									</button></td>
 								<td><button type="reset" class="btn btn-info btn-sm"
 										data-toggle="modal" data-target="#myModal">Clear</button></td>
 							</tr>

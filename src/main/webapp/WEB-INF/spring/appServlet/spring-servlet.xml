@@ -1,4 +1,3 @@
-
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
@@ -64,9 +63,8 @@
 	<bean class="com.est.entity.Email"></bean>
 	<bean class="com.est.service.NotifyService"></bean>
 	<bean class="com.est.service.MonitorService"></bean>
-	<bean class="com.est.service.ServerStatusCheck"></bean>
 	<bean class="com.est.service.UserXlsx"></bean>
-
+<bean class="com.est.entity.ApplicationStatusReport"></bean>
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/*" />

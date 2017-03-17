@@ -1,19 +1,27 @@
 package com.est.dto;
 
 import java.util.Date;
-
+/**
+ * This class is used for combining both Application and Status pojo's in one common class.
+ * so that we can display in front-end page wherever required.
+ *
+ */
 public class ApplicationAndStatusDto {
-
-	private int ApplicationId;
+	/*
+	decalring variables required for this class
+	*/
+	private int id;
 	private String ApplicationName;
 	private String ApplicationType;
 	private String ApplicationURL;
 	private String internalIpAddress;
 	private int newStatusCode;
+	private int oldStatusCode;
 	private String message;
 	private boolean active;
 	private Date responseGeneratedTime;
-
+	
+	//setters and getters for variables declared above.
 	public String getInternalIpAddress() {
 		return internalIpAddress;
 	}
@@ -22,12 +30,12 @@ public class ApplicationAndStatusDto {
 		this.internalIpAddress = internalIpAddress;
 	}
 
-	public int getApplicationId() {
-		return ApplicationId;
+	public int getId() {
+		return id;
 	}
 
-	public void setApplicationId(int applicationId) {
-		ApplicationId = applicationId;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getApplicationName() {
@@ -61,6 +69,15 @@ public class ApplicationAndStatusDto {
 	public void setNewStatusCode(int newStatusCode) {
 		this.newStatusCode = newStatusCode;
 	}
+	
+
+	public int getOldStatusCode() {
+		return oldStatusCode;
+	}
+
+	public void setOldStatusCode(int oldStatusCode) {
+		this.oldStatusCode = oldStatusCode;
+	}
 
 	public String getMessage() {
 		return message;
@@ -85,12 +102,15 @@ public class ApplicationAndStatusDto {
 	public void setResponseGeneratedTime(Date responseGeneratedTime) {
 		this.responseGeneratedTime = responseGeneratedTime;
 	}
+	//end of setters and getters for declared variables
 
+	//overrifing toString method
 	@Override
 	public String toString() {
-		return "ApplicationAndStatusDto [ApplicationId=" + ApplicationId + ", ApplicationName=" + ApplicationName
-				+ ", ApplicationType=" + ApplicationType + ", ApplicationURL=" + ApplicationURL + ", internalIpAddress="
-				+ internalIpAddress + ", newStatusCode=" + newStatusCode + ", message=" + message + ", active=" + active
-				+ ", responseGeneratedTime=" + responseGeneratedTime + "]";
+		return "ApplicationAndStatusDto [id=" + id + ", ApplicationName=" + ApplicationName + ", ApplicationType="
+				+ ApplicationType + ", ApplicationURL=" + ApplicationURL + ", internalIpAddress=" + internalIpAddress
+				+ ", newStatusCode=" + newStatusCode + ", oldStatusCode=" + oldStatusCode + ", message=" + message
+				+ ", active=" + active + ", responseGeneratedTime=" + responseGeneratedTime + "]";
 	}
+	
 }

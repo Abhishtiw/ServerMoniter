@@ -25,12 +25,13 @@ html, body {
   padding: 0;
   width: 15em;
   height: 100%;
-  background-color: #1e1e1e;
+  background-color: #184356;
 }
 
 #listView {
   display: block;
   position: relative;
+  left:0px;
 }
 
 #listView li {

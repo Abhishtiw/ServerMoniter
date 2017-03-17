@@ -63,18 +63,20 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Override
 	@Transactional
-	public Application getISPList(Class<Application> class1) {
-		Application application = appDao.getISPList(class1);
+	public Application getISP() {
+		Application application = appDao.getISP();
 		return application;
 	}
 
+
 	@Override
 	@Transactional
-	public String getPasswordBasedOnEmailId(String emailId) {
-		String email = appDao.getPasswordBasedOnEmailId(emailId);
-		return email;
+	public ApplicationEntity getEntityBasedOnEmailId(Class<? extends ApplicationEntity> entityClass, String emailId) {
+		ApplicationEntity appEntity = appDao.getEntityBasedOnEmailId(entityClass,emailId);
+		return appEntity;
 	}
 
+	
 	@Override
 	@Transactional
 	public boolean deleteEmailRecord(String mailId) {

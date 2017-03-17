@@ -65,13 +65,13 @@ public class MonitorService {
 				/* Getting response code by hitting web application */
 				responseCode = connection.getResponseCode();
 				responseMsg = connection.getResponseMessage();
-				logger.info("Printing Response Message : " + responseMsg);
+				logger.info("Response Code is : "+responseCode+" And corresponding Response Message is : " + responseMsg);
 				return responseCode;
 			} catch (MalformedURLException e) {
-				logger.warn("Invalid URL");
+				logger.error("Invalid URL");
 				return ErrorCode.MALURL_INVALID_URL_EXCEPTION_CODE;
 			} catch (IOException e) {
-				logger.warn("Unable To Establish Connection");
+				logger.error("Unable To Establish Connection");
 				return ErrorCode.URL_IOEXCEPTION_CODE;
 			}
 		} else {
@@ -86,50 +86,49 @@ public class MonitorService {
 	@Transactional
 	public void compareApplicationStatus() {
 		logger.info("Method compareApplicationStatus Execution Starts");
-		boolean sendMail;
+		boolean sendMail = false;
+		int changedAppCount = 0;
 		appList = appDao.getEntityList(Application.class);
 		logger.info("Getting List Of Applications From The Database");
 		if (appList.size() > 0) {
 			Iterator<ApplicationEntity> appIterator = appList.iterator();
 			logger.info("Iterating Each And Every Application From The List Of Applications");
-			sendMail = false;
 			while (appIterator.hasNext()) {
 				application = (Application) appIterator.next();
 				if (application.isActive() == true) {
 					logger.info("Getting New Status Code From The Application");
-					int newStatus = application.getNewStatusCode();
+					int prevStatus = application.getNewStatusCode();
 					/*
 					 * Calling generateResponseCode(String url) method by
 					 * passing the URL
 					 */
 					logger.info("Getting New Generated Response Code By Passing URL To The Application");
-					int newGeneratedStatus = generateResponseCode(application.getApplicationURL());
+					int currentStatus = generateResponseCode(application.getApplicationURL());
 					// Comparing mechanism for status
 					logger.info("Comparing The Status Of Application");
-					if (newStatus != newGeneratedStatus) {
+					if (prevStatus != currentStatus) {
 						logger.info("Inside if Block For Comparing Status");
-						System.out.println("Inside IF block");
+						changedAppCount++;
 						sendMail = true;
-						logger.info("Initialize senEmail As True Innitially");
+						logger.info("Initialize sendEmail As True");
 						application.setResponseGeneratedTime(new Date());
 						logger.info("Setting Response Generated Time");
-						application.setOldStatusCode(newStatus);
+						application.setOldStatusCode(prevStatus);
 						logger.info("Setting Old Status Of The Application By Passing New Status");
-						application.setNewStatusCode(newGeneratedStatus);
+						application.setNewStatusCode(currentStatus);
 						logger.info("Setting New Status Of The Application By Passing New Generated Status");
 						/* updating the database */
 						appDao.updateEntity(application);
-						logger.info("Updating The Application Entity With The Above Values");
-						System.out.println("update completed");
 						logger.info("Updating Application Entity Completed");
 					}
 				}
 			}
 			if (sendMail) {
-				notifyService.sendMail();// Calling Mail functionality method
+				/* Calling Mail functionality method */
+				notifyService.sendMail(changedAppCount);
 				logger.info("sendEmail = true, Calling The sendMail() Method From notifyService");
 			} else {
-				logger.warn("sendEmail = false, Hence No Need Of Sending Email, Continuing Monitoring The Server");
+				logger.error("sendEmail = false, Hence No Need Of Sending Email, Continuing Monitoring The Server");
 			}
 		} else {
 			logger.error("Currently No Application Is Running On The Server");
@@ -179,19 +178,17 @@ public class MonitorService {
 	 */
 	public void compareISPstatus() {
 		logger.info("Method compareISPstatus Execution Starts");
-		Application app = appDao.getISPList(Application.class);
+		Application app = appDao.getISP();
 		logger.info("Getting The List Of ISP's From the Database");
+		String illStatus = "";
 		if (app != null) {
 			logger.info("Checking The List Of ISP's For Null");
 			int newStatus = app.getNewStatusCode();
 			int networkStatus = app.getNewStatusCode();
 			networkStatus = checkNetworkStatus(String.valueOf(app.getApplicationURL()));
-			System.out.println(networkStatus);
 			logger.info("Printing Network Status : " + networkStatus);
 			if (networkStatus == 200) {
-				logger.info("Checking For The Network Status Inside 'if' Block");
-				logger.info("The network status code is " + networkStatus + "ISP is working");
-				logger.info("Calling compareApplicationStatus method");
+				logger.info("The network status code is " + networkStatus + "ISP is working.And Calling compareApplicationStatus method");
 				compareApplicationStatus();
 			}
 			if (newStatus != networkStatus) {
@@ -202,8 +199,13 @@ public class MonitorService {
 				app.setNewStatusCode(networkStatus);
 				appDao.updateEntity(app);
 				logger.info("Updating The Application Entity");
+				if (networkStatus == 200) {
+					illStatus = "UP";
+				} else {
+					illStatus = "DOWN";
+				}
 				/* Calling Mail functionality Method */
-				notifyService.sendISPErrorMail();
+				notifyService.sendISPErrorMail(illStatus);
 				logger.info("Calling sendISPErrorMail Method On notifyService Object");
 			} else {
 				logger.info("Continue Monitoring The ILL");

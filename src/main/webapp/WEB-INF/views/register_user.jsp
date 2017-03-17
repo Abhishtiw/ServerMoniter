@@ -25,27 +25,37 @@
 </head>
 
 <body>
-	<div id="wrapper">
+	 <div id="wrapper">
 		<div id="leftWrapper">
 			<div id="listView" class="list">
-				<ul>
-					<li class="list-item-active"><a href="applicationstatus"><img
-							src="resources/image/logo.PNG" alt="logo"></a></li>
+				<ul style="padding-top: -;padding-left: 0px;">
+					<li class="list-item-active" style="height: 60px;"><a href="applicationstatus" style="padding-right: 2px;
+    padding-top: 0px;
+    padding-left: -;
+    border-bottom-width: 3px;
+    padding-bottom: 2px;
+    height: 60px;
+    padding-left: 2px;
+    padding-left: 0px;border-top-width: 0px;"><img src="resources/image/estuate.jpg" alt="logo" style="
+    padding-left: 0;
+    border-right-width: 5px;
+    padding-right: 5px;
+    width: 215px;
+    height: 60px;
+    "></a>::after</li>
 					<li><a href="addApplication">Add Application</a></li>
-					<li><a href="addApplicationsFromExcel">Add Applications
-							From External File</a></li>
 					<li><a href="addUser">Add User</a></li>
 					<li><a href="displayApplication">View Applications</a></li>
 					<li><a href="displayUser">View Users</a></li>
-					<li><a href="applicationstatus">Status Report</a></li>
-					<li><a href="#">Email History</a></li>
+					<li><a href="applicationhealthstatus">Health Status Report</a></li>
 					<li><a href="signout">Sign Out</a></li>
 				</ul>
 			</div>
 		</div>
 		<div id="rightWrapper">
-			<div id="header">
+			<div id="header" style="border-bottom-width:1px; " >
 				<a id="fullPage" href="#">|||</a>
+				<label></label>
 			</div>
 			<br> <br> <br>
 			<br> <br>
@@ -54,8 +64,8 @@
 			<div id="container">
 				<div id="container_body">
 					<div align="justify">
-						<h2 class="form_title">Register User</h2>
-						<p class="head_para">Enter valid details to Register</p>
+						<h2 class="form_title">Add User</h2>
+						<p class="head_para">Enter valid details to Add User</p>
 					</div>
 				</div>
 				<!--Form  start-->
@@ -95,20 +105,13 @@
 								<td><span style="color: red;" id="passwordError"
 									class="error"> </span></td>
 							</tr>
-							<!-- <tr>
-						<td align="center">Role:<label style="color: red">*</label></td>
-						<td><select name="role">
-								<option value="1">Admin</option>
-								<option value="2">Others</option>
-						</select></td>
-					</tr> -->
 						</table>
 						<br>
 						<table style="height: 47px;" width="365">
 							<tr>
 								<td align="center"><button type="submit"
 										class="btn btn-info btn-sm" data-toggle="modal"
-										data-target="#myModal">Register</button></td>
+										data-target="#myModal">Add</button></td>
 								<td><button type="reset" class="btn btn-danger btn-sm"
 										data-toggle="modal" data-target="#myModal">Clear</button></td>
 							</tr>

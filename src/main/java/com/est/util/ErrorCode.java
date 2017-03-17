@@ -1,9 +1,7 @@
 package com.est.util;
 
 public interface ErrorCode {
-
 	String NO_IIL_FOUND = "NO_IIL_FOUND" ;
-	
 	// database related errors
 	String DB_DRIVER_ERROR = "DB_DRIVER_ERROR";
 	String DB_CONNECTION_FAIL = "DB_CONNECTION_FAIL";
@@ -76,5 +74,4 @@ public interface ErrorCode {
 	int MALURL_INVALID_URL_EXCEPTION_CODE=999;
 	int URL_IOEXCEPTION_CODE=888;
 	int EMPTY_URL_CODE=000;
-	
 }

@@ -1,6 +1,7 @@
 package com.est.dao;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -12,7 +13,6 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.est.controller.ApplicationController;
 import com.est.dto.ApplicationAndStatusDto;
 import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
@@ -28,7 +28,7 @@ import com.est.util.ServerMonitorException;
  */
 @Repository
 public class ApplicationDaoImpl implements ApplicationDao {
-	private static final Logger logger = Logger.getLogger(ApplicationController.class);
+	private static final Logger logger = Logger.getLogger(ApplicationDaoImpl.class);
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -46,11 +46,10 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			/* Saving appEntity to database */
 			session.save(appentity);
 			transaction.commit();
-			logger.info("Record Inserted");
-			logger.info("Execution Completed addEntity Method In ApplicationDaoImpl");
+			logger.info("Record Inserted.Execution Completed addEntity Method In ApplicationDaoImpl");
 			return true;
 		} catch (HibernateException e) {
-			logger.warn("Record not inserted..");
+			logger.error("Record not inserted..");
 			/* Rollback all transactions,if any exception occurs */
 			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
@@ -67,11 +66,10 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			transaction = session.beginTransaction();
 			session.update(entity);
 			transaction.commit();
-			logger.info("Record Updated");
-			logger.info("Execution Completed updateEntity Method In ApplicationDaoImpl");
+			logger.info("Record Updated.Execution Completed updateEntity Method In ApplicationDaoImpl");
 			return true;
 		} catch (HibernateException e) {
-			logger.warn("Record Not Updated");
+			logger.error("Record Not Updated");
 			/* Rollback all transactions,if any exception occurs */;
 			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
@@ -89,11 +87,10 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			ApplicationEntity appEntity = (ApplicationEntity) session.get(entityClass.getName(), entityId);
 			session.delete(appEntity);
 			transaction.commit();
-			logger.info("Record deleted..");
-			logger.info("Execution Completed deleteEntity Method In ApplicationDaoImpl");
+			logger.info("Record deleted.Execution Completed deleteEntity Method In ApplicationDaoImpl");
 			return true;
 		} catch (HibernateException e) {
-			logger.warn("Record Not Deleted");
+			logger.error("Record Not Deleted");
 			/* Rollback all transactions,if any exception occurs */
 			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
@@ -112,14 +109,16 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			transaction = session.beginTransaction();
 			if (entityClass.getSimpleName().equals("Application")) {
 				query = session.createQuery("from Application where applicationType <> 'ill'");
+			} else if (entityClass.getSimpleName().equals("ApplicationStatusReport")) {
+				query = session.createQuery("from " + entityClass.getSimpleName() + " order by applicationId");
 			} else {
-				query = session.createQuery("from " + entityClass.getSimpleName());
+				query = session.createQuery("from " + entityClass.getSimpleName() + " order by id");
 			}
 			entityList = query.list();
 			transaction.commit();
 			logger.info("Execution Completed getEntityList Method In ApplicationDaoImpl");
 		} catch (HibernateException e) {
-			logger.warn("Failed to load details");
+			logger.error("Failed to load details");
 			/* Rollback all transactions,if any exception occurs */
 			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
@@ -136,13 +135,12 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		try {
 			session = sessionFactory.openSession();
 			transaction = session.beginTransaction();
-		    appEntity = (ApplicationEntity) session.get(entityClass.getName(), appId);
+			appEntity = (ApplicationEntity) session.get(entityClass.getName(), appId);
 			transaction.commit();
-			logger.info("Record Loaded");
-			logger.info("Execution Completed getEntityByID Method In ApplicationDaoImpl");
+			logger.info("Record Loaded.Execution Completed getEntityByID Method In ApplicationDaoImpl");
 			return appEntity;
 		} catch (HibernateException e) {
-			logger.warn("Record Not Loaded");
+			logger.error("Record Not Loaded");
 			/* Rollback all transactions,if any exception occurs */
 			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
@@ -161,10 +159,9 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			query = session.createQuery("from User where userName='" + userName + "' and password='" + password + "'");
 			query.setMaxResults(1);
 			user = (User) query.uniqueResult();
-			logger.info("User Record Loaded");
-			logger.info("Execution Completed getNamePassword Method In ApplicationDaoImpl");
+			logger.info("User Record Loaded.Execution Completed getNamePassword Method In ApplicationDaoImpl");
 		} catch (HibernateException e) {
-			logger.warn("User Record Not Loaded");
+			logger.error("User Record Not Loaded");
 			/* Rollback all transactions,if any exception occurs */
 			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
@@ -176,7 +173,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
 	}
 
 	@Override
-	public Application getISPList(Class<Application> class1) {
+	public Application getISP() {
 		logger.info("Start Executing getISPList Method In ApplicationDaoImpl");
 		Application application = null;
 		try {
@@ -186,10 +183,9 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			query.setMaxResults(1);
 			application = (Application) query.uniqueResult();
 			transaction.commit();
-			logger.info("ISP Record Loaded");
-			logger.info("Execution Completed getISPList Method In ApplicationDaoImpl");
+			logger.info("ISP Record Loaded.Execution Completed getISPList Method In ApplicationDaoImpl");
 		} catch (HibernateException e) {
-			logger.warn("Failed To Load Details");
+			logger.error("Failed To Load Details");
 			/* Rollback all transactions,if any exception occurs */
 			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.NO_IIL_FOUND, e);
@@ -200,25 +196,20 @@ public class ApplicationDaoImpl implements ApplicationDao {
 	}
 
 	@Override
-	public String getPasswordBasedOnEmailId(String emailId) {
-		logger.info("Start Executing getPasswordBasedOnEmailId Method In ApplicationDaoImpl");
-		User user = null;
+	public ApplicationEntity getEntityBasedOnEmailId(Class<? extends ApplicationEntity> entityClass, String emailId) {
+		logger.info("Start Executing getEntityBasedOnEmailId Method In ApplicationDaoImpl");
+		ApplicationEntity appEntity = null;
 		try {
 			session = sessionFactory.openSession();
 			transaction = session.beginTransaction();
-			query = session.createQuery("from User where emailId='" + emailId + "'");
+			query = session.createQuery("from " + entityClass.getSimpleName() + " where emailId='" + emailId + "'");
 			query.setMaxResults(1);
-			user = (User) query.uniqueResult();
-			if (user != null) {
-				logger.info("User Record Loaded");
-				logger.info("Execution Completed getPasswordBasedOnEmailId Method In ApplicationDaoImpl");
-				return user.getPassword();
-			} else {
-				logger.info("User Record Loaded With Null Value");
-				return "";
-			}
+			appEntity = (ApplicationEntity) query.uniqueResult();
+			logger.info(
+					"ApplicationEntity Record Loaded.Execution Completed getEntityBasedOnEmailId Method In ApplicationDaoImpl");
+			return appEntity;
 		} catch (HibernateException e) {
-			logger.warn("User Record Not Loaded");
+			logger.error("ApplicationEntity Record Not Loaded");
 			/* Rollback all transactions,if any exception occurs */
 			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
@@ -243,7 +234,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
 				logger.info("Record deleted..");
 				return true;
 			} else {
-				logger.warn("Record with email Id " + mailId + "  is not deleted!!");
+				logger.error("Record with email Id " + mailId + "  is not deleted!!");
 				return false;
 			}
 		} catch (HibernateException e) {
@@ -277,13 +268,14 @@ public class ApplicationDaoImpl implements ApplicationDao {
 				app = (Application) obj[0];
 				if (!app.getApplicationType().equals("ill")) {
 					status = (ApplicationStatus) obj[1];
-					dto.setApplicationId(app.getApplicationId());
+					dto.setId(app.getId());
 					dto.setApplicationName(app.getApplicationName());
 					dto.setApplicationType(app.getApplicationType());
 					dto.setApplicationURL(app.getApplicationURL());
 					dto.setInternalIpAddress(app.getInternalIpAddress());
 					dto.setResponseGeneratedTime(app.getResponseGeneratedTime());
 					dto.setNewStatusCode(app.getNewStatusCode());
+					dto.setOldStatusCode(app.getOldStatusCode());
 					dto.setMessage(status.getStatusMessage());
 					dto.setActive(app.isActive());
 					appStatusList.add(dto);
@@ -298,5 +290,31 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			session.close();
 		}
 		return appStatusList;
+	}
+
+	/**
+	 * 
+	 * getting status message from applicationStatus table by passing status
+	 * code
+	 */
+
+	public String getStatusMsg(int responseCode) {
+		logger.info("Start Executing getStatusMsg Method in ApplicationDaoImpl");
+		String statusMessage = null;
+		try {
+			session = sessionFactory.openSession();
+			transaction = session.beginTransaction();
+			Query query = session
+					.createQuery("select statusMessage from ApplicationStatus where statusCode = " + responseCode);
+			query.setMaxResults(1);
+			statusMessage = (String) query.uniqueResult();
+			return statusMessage;
+		} catch (HibernateException e) {
+			logger.error("Status Message not loaded");
+			transaction.rollback();
+			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
+		} finally {
+			session.close();
+		}
 	}
 }

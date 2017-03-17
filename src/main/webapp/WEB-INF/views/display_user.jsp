@@ -21,27 +21,37 @@
 <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
 </head>
 <body>
-	<div id="wrapper">
+ <div id="wrapper">
 		<div id="leftWrapper">
 			<div id="listView" class="list">
-				<ul>
-					<li class="list-item-active"><a href="applicationstatus"><img
-							src="resources/image/logo.PNG" alt="logo"></a></li>
+				<ul style="padding-top: -;padding-left: 0px;">
+					<li class="list-item-active" style="height: 60px;"><a href="applicationstatus" style="padding-right: 2px;
+    padding-top: 0px;
+    padding-left: -;
+    border-bottom-width: 3px;
+    padding-bottom: 2px;
+    height: 60px;
+    padding-left: 2px;
+    padding-left: 0px;border-top-width: 0px;"><img src="resources/image/estuate.jpg" alt="logo" style="
+    padding-left: 0;
+    border-right-width: 5px;
+    padding-right: 5px;
+    width: 215px;
+    height: 60px;
+    "></a>::after</li>
 					<li><a href="addApplication">Add Application</a></li>
-					<li><a href="addApplicationsFromExcel">Add Applications
-							From External File</a></li>
 					<li><a href="addUser">Add User</a></li>
 					<li><a href="displayApplication">View Applications</a></li>
 					<li><a href="displayUser">View Users</a></li>
-					<li><a href="applicationstatus">Status Report</a></li>
-					<li><a href="#">Email History</a></li>
+					<li><a href="applicationhealthstatus">Health Status Report</a></li>
 					<li><a href="signout">Sign Out</a></li>
 				</ul>
 			</div>
 		</div>
 		<div id="rightWrapper">
-			<div id="header">
+			<div id="header" style="border-bottom-width:1px; " >
 				<a id="fullPage" href="#">|||</a>
+				<label></label>
 			</div>
 			<br> <br> <br> <br> <br>
 			<div class="row">
@@ -58,14 +68,14 @@
 							</tr>
 							<c:forEach items="${user}" var="user">
 								<tr>
-									<td><c:out value="${user.userId}" /></td>
+									<td><c:out value="${user.id}" /></td>
 									<td><c:out value="${user.userName}" /></td>
 									<td><c:out value="${user.emailId}" /></td>
 									<td><a class="btn btn-primary btn-xs"
-										href="editUser?userId=<c:out value="${user.userId}"/>"><span
+										href="editUser?userId=<c:out value="${user.id}"/>"><span
 											class="glyphicon glyphicon-pencil"></span></a></td>
 									<td><a class="btn btn-danger btn-xs"
-										href="deleteUser?userId=<c:out value="${user.userId}"/>&mailId=<c:out value="${user.emailId}" />"><span
+										href="deleteUser?userId=<c:out value="${user.id}"/>&mailId=<c:out value="${user.emailId}" />" onclick="return confirm('Are you sure you want to delete!!?');"><span
 											class="glyphicon glyphicon-trash"></span></a></td>
 								</tr>
 							</c:forEach>

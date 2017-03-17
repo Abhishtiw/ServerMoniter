@@ -11,12 +11,19 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * This entity is meant for the details of the application which we want to add
+ * for monitoring.
+ */
 @Entity
 @Table(name = "application")
 public class Application extends ApplicationEntity {
+
+	/* decalring variabled required for Application*/
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int applicationId;
+	@Column(name = "applicationId")
+	private int id;
 	private String applicationName;
 	@Column(name = "ipaddress")
 	private String internalIpAddress;
@@ -26,15 +33,15 @@ public class Application extends ApplicationEntity {
 	private int newStatusCode;
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private Date responseGeneratedTime;
-	private int emailId;
 	private boolean active;
 
-	public int getApplicationId() {
-		return applicationId;
+	/* getters and setters for the variables declared above.*/
+	public int getId() {
+		return id;
 	}
 
-	public void setApplicationId(int applicationId) {
-		this.applicationId = applicationId;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getApplicationName() {
@@ -93,15 +100,6 @@ public class Application extends ApplicationEntity {
 		this.responseGeneratedTime = responseGeneratedTime;
 	}
 
-	public int getEmailId() {
-		return emailId;
-	}
-
-	public void setEmailId(int emailId) {
-		this.emailId = emailId;
-	}
-
-	
 	public boolean isActive() {
 		return active;
 	}
@@ -110,12 +108,13 @@ public class Application extends ApplicationEntity {
 		this.active = active;
 	}
 
+	// overriding toString method
 	@Override
 	public String toString() {
-		return "Application [applicationId=" + applicationId + ", applicationName=" + applicationName
-				+ ", internalIpAddress=" + internalIpAddress + ", applicationURL=" + applicationURL
-				+ ", applicationType=" + applicationType + ", oldStatusCode=" + oldStatusCode + ", newStatusCode="
-				+ newStatusCode + ", responseGeneratedTime=" + responseGeneratedTime + ", emailId=" + emailId
-				+ ", active=" + active + "]";
+		return "Application [id=" + id + ", applicationName=" + applicationName + ", internalIpAddress="
+				+ internalIpAddress + ", applicationURL=" + applicationURL + ", applicationType=" + applicationType
+				+ ", oldStatusCode=" + oldStatusCode + ", newStatusCode=" + newStatusCode + ", responseGeneratedTime="
+				+ responseGeneratedTime + ", active=" + active + "]";
 	}
+
 }
