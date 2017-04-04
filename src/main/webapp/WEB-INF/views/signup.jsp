@@ -4,10 +4,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>AHS-Registern User</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
-<link rel="stylesheet" href="resources/css/style1.css">
+<link rel="stylesheet" href="resources/css/style.css">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script
@@ -36,13 +36,11 @@
 			<div class="row" style="background-color: #efeff5;height: 1200px ">
 				<div class="logo text-center" style="margin-top: 10px;
     margin-left: 11px;">
-					<a href="#"><img src="resources/image/logo.PNG"
+					<a href="#"><img src="resources/image/estuate.jpg"
 						alt="logo"
 						style="padding-left: 0; border-right-width: 5px; padding-right: 5px; width: 215px; height: 66.15px"></a>
 				</div>
-				<div class="headText text-center col-sm-6">
-					<h1 style="font-family: Comic Sans MS, cursive, sans-serif">Estuate Software Pvt Ltd</h1>
-				</div>
+				
 				<div id="polina" class="col-sm-6" style="background: rgba(123, 167, 193, 0.61) ">
 					<h4 class="text-center" style="color: #243a65">Register as a New User</h4>
 					<div class="social text-center">
@@ -107,8 +105,7 @@
 								placeholder="Password" required name="password"
 									onkeyup="checkPassword()" onblur="validateUser()"> <span
 								class="glyphicon glyphicon-lock form-control-feedback"></span>
-								<span style="color: red;" id="passwordError"
-									class="error">
+								<span style="color: red;" id="passwordError" class="error"></span>
 						</div>
 					</div>
 					<br>
@@ -117,15 +114,16 @@
 							By signing up, you agree to our <a href="#">T&C</a> and <a
 								href="#">privacy policy</a>
 						</p> -->
-						<!-- <button type="button" class="btn sellBtn btn-success">START
-							SELLING</button> -->
+						<button type="submit" class="btn sellBtn btn-success">
+							 <span class="fa fa-sign-in">&nbsp;SignUp</span>  </button>
+							 
 	&nbsp;&nbsp;&nbsp;&nbsp;<div class="col-sm-6">
-        <a class="btn btn-block btn-social btn-facebook" onclick="return confirm('Please Check all the fields!!')">
+       <!--  <a class="btn btn-block btn-social btn-facebook" href="/servermonitor/registerMe" onclick="return confirm('Please Check all the fields!!')">
             <span class="fa fa-sign-in"></span> Sign Up
-        </a>
-        <a class="btn btn-block btn-social btn-facebook" href="/servermonitor/">
-           <!--  <span class="fa fa-sign-in"></span> --> Back
-        </a>
+        </a> -->
+       <a class="btn btn-block btn-social btn-facebook"
+									href="javascript:history.back()"> <span>Back</span>
+									</a>
 					</div>
 					</div>
 					</form>

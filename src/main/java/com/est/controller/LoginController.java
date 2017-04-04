@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,17 +44,16 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "validateLogin", method = RequestMethod.POST)
 	public String loginValidate(@RequestParam("userName") String userName, @RequestParam("password") String password,
-			HttpSession session, HttpServletRequest request) {
+			HttpSession session, HttpServletRequest request, ModelMap model) {
 		logger.info("Method loginValidate Execution Starts");
 		User user = applicationService.getNamePassword(userName, password);
-		logger.info("Getting username And password From The User");
 		if (user != null) {
-			logger.info("Preparing The Session Object With User Data");
 			request.getSession().setAttribute("user", user);
 			logger.info("Completed Executing loginValidate  Method");
 			return "redirect:applicationstatus";
 		} else {
 			logger.error("Invalid User Credentials");
+			model.addAttribute("UserMessage", "invalid username and password");
 			return "login";
 		}
 	}

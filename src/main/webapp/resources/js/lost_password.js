@@ -1,20 +1,20 @@
-function validateUser() {
-	var fv = true;
-	var email = document.registerUser.email.value;
-		
-	var atposition=email.indexOf("@");  
-	var dotposition=email.lastIndexOf(".");  
+function validateEmail() {
 	
-	if (atposition<1 || dotposition<atposition+2 || dotposition+2>=email.length){  
- 	alert("Please enter a valid e-mail address example:abc@gmail.com"); 
- 	document.getElementById('emailError').innerHTML = "Please enter valid e-mail address "; 
- 	 fv= false;  
-  }  
-	return fv;
-}
+	var emailreg = /\S+@\S+\.\S+/;
+	
+	var email = document.lostPwdForm.emailId.value;
+	
+	if (email == "") {
+		document.getElementById('emailError').innerHTML = "Email cannot be empty";
+		fv = false;
+	}
 
-
-function checkEmail() {
+	if (!email.match(emailreg)) {
+		document.getElementById('emailError').innerHTML = "not a valid email adderss";
+		fv = false;
+	}
+}	
+	function checkEmail() {
 	document.getElementById('emailError').innerHTML = "";
-}
 
+}

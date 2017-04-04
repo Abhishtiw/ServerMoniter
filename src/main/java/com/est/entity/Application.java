@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.GenericGenerator;
+
 /**
  * This entity is meant for the details of the application which we want to add
  * for monitoring.
@@ -21,7 +23,8 @@ public class Application extends ApplicationEntity {
 
 	/* decalring variabled required for Application*/
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GenericGenerator(name="myIdGen",strategy="com.est.util.MyIdGenerator")
+	@GeneratedValue(generator = "myIdGen", strategy = GenerationType.AUTO)
 	@Column(name = "applicationId")
 	private int id;
 	private String applicationName;
@@ -34,6 +37,7 @@ public class Application extends ApplicationEntity {
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private Date responseGeneratedTime;
 	private boolean active;
+	private String location;
 
 	/* getters and setters for the variables declared above.*/
 	public int getId() {
@@ -108,13 +112,24 @@ public class Application extends ApplicationEntity {
 		this.active = active;
 	}
 
+	
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
 	// overriding toString method
+	
 	@Override
 	public String toString() {
 		return "Application [id=" + id + ", applicationName=" + applicationName + ", internalIpAddress="
 				+ internalIpAddress + ", applicationURL=" + applicationURL + ", applicationType=" + applicationType
 				+ ", oldStatusCode=" + oldStatusCode + ", newStatusCode=" + newStatusCode + ", responseGeneratedTime="
-				+ responseGeneratedTime + ", active=" + active + "]";
+				+ responseGeneratedTime + ", active=" + active + ", location=" + location + "]";
 	}
+	
 
 }

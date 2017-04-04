@@ -3,7 +3,6 @@ package com.est.service;
 import java.util.List;
 
 import com.est.dto.ApplicationAndStatusDto;
-import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
 import com.est.entity.User;
 
@@ -70,14 +69,6 @@ public interface ApplicationService {
 	 *         returns null.
 	 */
 	public User getNamePassword(String userName, String password);
-
-	/**
-	 * The implementation for this method returns an ISP record from the
-	 * database.
-	 * 
-	 * @return Application record
-	 */
-	public Application getISP();
 
 	/**
 	 * The implementation for this method returnsan Entity based on the provided

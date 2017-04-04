@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.est.dao.ApplicationDao;
 import com.est.dto.ApplicationAndStatusDto;
-import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
 import com.est.entity.User;
 
@@ -60,14 +59,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 		User user = appDao.getNamePassword(userName, password);
 		return user;
 	}
-
-	@Override
-	@Transactional
-	public Application getISP() {
-		Application application = appDao.getISP();
-		return application;
-	}
-
 
 	@Override
 	@Transactional

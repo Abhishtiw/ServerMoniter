@@ -3,9 +3,11 @@ package com.est.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
 import org.apache.log4j.Logger;
 
+/**
+ * This Class is meant for creating Custom Exceptions .
+ */
 public class ServerMonitorException extends RuntimeException {
 	private static final Logger logger = Logger.getLogger(ServerMonitorException.class);
 
@@ -15,9 +17,8 @@ public class ServerMonitorException extends RuntimeException {
 	private Properties props;
 
 	/**
-	 * parameterized constructor which takes error code as parameter
-	 * 
-	 * Displays the error messages corresponding to the errorcode
+	 * parameterized constructor which takes error code as parameter Displays
+	 * the error messages corresponding to the errorcode
 	 * 
 	 * @param code
 	 */
@@ -27,9 +28,8 @@ public class ServerMonitorException extends RuntimeException {
 	}
 
 	/**
-	 * constructor which takes error code and a throwable object
-	 * 
-	 * logs the throwable object
+	 * constructor which takes error code and a throwable object logs the
+	 * throwable object
 	 * 
 	 * @param code
 	 * @param e

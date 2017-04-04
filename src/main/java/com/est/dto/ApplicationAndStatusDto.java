@@ -11,9 +11,9 @@ public class ApplicationAndStatusDto {
 	decalring variables required for this class
 	*/
 	private int id;
-	private String ApplicationName;
-	private String ApplicationType;
-	private String ApplicationURL;
+	private String applicationName;
+	private String applicationType;
+	private String applicationURL;
 	private String internalIpAddress;
 	private int newStatusCode;
 	private int oldStatusCode;
@@ -22,14 +22,6 @@ public class ApplicationAndStatusDto {
 	private Date responseGeneratedTime;
 	
 	//setters and getters for variables declared above.
-	public String getInternalIpAddress() {
-		return internalIpAddress;
-	}
-
-	public void setInternalIpAddress(String internalIpAddress) {
-		this.internalIpAddress = internalIpAddress;
-	}
-
 	public int getId() {
 		return id;
 	}
@@ -39,27 +31,35 @@ public class ApplicationAndStatusDto {
 	}
 
 	public String getApplicationName() {
-		return ApplicationName;
+		return applicationName;
 	}
 
 	public void setApplicationName(String applicationName) {
-		ApplicationName = applicationName;
+		this.applicationName = applicationName;
 	}
 
 	public String getApplicationType() {
-		return ApplicationType;
+		return applicationType;
 	}
 
 	public void setApplicationType(String applicationType) {
-		ApplicationType = applicationType;
+		this.applicationType = applicationType;
 	}
 
 	public String getApplicationURL() {
-		return ApplicationURL;
+		return applicationURL;
 	}
 
 	public void setApplicationURL(String applicationURL) {
-		ApplicationURL = applicationURL;
+		this.applicationURL = applicationURL;
+	}
+
+	public String getInternalIpAddress() {
+		return internalIpAddress;
+	}
+
+	public void setInternalIpAddress(String internalIpAddress) {
+		this.internalIpAddress = internalIpAddress;
 	}
 
 	public int getNewStatusCode() {
@@ -69,7 +69,6 @@ public class ApplicationAndStatusDto {
 	public void setNewStatusCode(int newStatusCode) {
 		this.newStatusCode = newStatusCode;
 	}
-	
 
 	public int getOldStatusCode() {
 		return oldStatusCode;
@@ -102,15 +101,17 @@ public class ApplicationAndStatusDto {
 	public void setResponseGeneratedTime(Date responseGeneratedTime) {
 		this.responseGeneratedTime = responseGeneratedTime;
 	}
+		
 	//end of setters and getters for declared variables
 
 	//overrifing toString method
 	@Override
 	public String toString() {
-		return "ApplicationAndStatusDto [id=" + id + ", ApplicationName=" + ApplicationName + ", ApplicationType="
-				+ ApplicationType + ", ApplicationURL=" + ApplicationURL + ", internalIpAddress=" + internalIpAddress
+		return "ApplicationAndStatusDto [id=" + id + ", ApplicationName=" + applicationName + ", ApplicationType="
+				+ applicationType + ", ApplicationURL=" + applicationURL + ", internalIpAddress=" + internalIpAddress
 				+ ", newStatusCode=" + newStatusCode + ", oldStatusCode=" + oldStatusCode + ", message=" + message
 				+ ", active=" + active + ", responseGeneratedTime=" + responseGeneratedTime + "]";
 	}
+
 	
 }

@@ -61,15 +61,25 @@
 	<bean class="com.est.entity.Application"></bean>
 	<bean class="com.est.entity.User"></bean>
 	<bean class="com.est.entity.Email"></bean>
+	<bean class="com.est.entity.InternetLeaseLine"></bean>
 	<bean class="com.est.service.NotifyService"></bean>
 	<bean class="com.est.service.MonitorService"></bean>
 	<bean class="com.est.service.UserXlsx"></bean>
-<bean class="com.est.entity.ApplicationStatusReport"></bean>
+	<bean class="com.est.entity.ApplicationStatusReport"></bean>
+
+	<!-- interceptor configuration-->
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/*" />
 			<bean class="com.est.controller.LoginInterceptor"></bean>
 		</mvc:interceptor>
 	</mvc:interceptors>
+
+	<!-- uploading excel file configuration -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- maxUploadSize=10MB -->
+		<property name="maxUploadSize" value="10240000" />
+	</bean>
 
 </beans>

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.est.dao.ApplicationDao;
 import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
+import com.est.entity.InternetLeaseLine;
 import com.est.util.ErrorCode;
 
 /**
@@ -65,7 +66,8 @@ public class MonitorService {
 				/* Getting response code by hitting web application */
 				responseCode = connection.getResponseCode();
 				responseMsg = connection.getResponseMessage();
-				logger.info("Response Code is : "+responseCode+" And corresponding Response Message is : " + responseMsg);
+				logger.info("Response Code is : " + responseCode + " And corresponding Response Message is : "
+						+ responseMsg);
 				return responseCode;
 			} catch (MalformedURLException e) {
 				logger.error("Invalid URL");
@@ -84,55 +86,39 @@ public class MonitorService {
 	 * To compare and update the new status of an application.
 	 */
 	@Transactional
-	public void compareApplicationStatus() {
+	public int compareApplicationStatus() {
 		logger.info("Method compareApplicationStatus Execution Starts");
-		boolean sendMail = false;
 		int changedAppCount = 0;
 		appList = appDao.getEntityList(Application.class);
 		logger.info("Getting List Of Applications From The Database");
 		if (appList.size() > 0) {
 			Iterator<ApplicationEntity> appIterator = appList.iterator();
-			logger.info("Iterating Each And Every Application From The List Of Applications");
 			while (appIterator.hasNext()) {
 				application = (Application) appIterator.next();
 				if (application.isActive() == true) {
-					logger.info("Getting New Status Code From The Application");
 					int prevStatus = application.getNewStatusCode();
 					/*
 					 * Calling generateResponseCode(String url) method by
 					 * passing the URL
 					 */
-					logger.info("Getting New Generated Response Code By Passing URL To The Application");
 					int currentStatus = generateResponseCode(application.getApplicationURL());
 					// Comparing mechanism for status
 					logger.info("Comparing The Status Of Application");
 					if (prevStatus != currentStatus) {
-						logger.info("Inside if Block For Comparing Status");
 						changedAppCount++;
-						sendMail = true;
-						logger.info("Initialize sendEmail As True");
 						application.setResponseGeneratedTime(new Date());
-						logger.info("Setting Response Generated Time");
 						application.setOldStatusCode(prevStatus);
-						logger.info("Setting Old Status Of The Application By Passing New Status");
 						application.setNewStatusCode(currentStatus);
-						logger.info("Setting New Status Of The Application By Passing New Generated Status");
 						/* updating the database */
 						appDao.updateEntity(application);
 						logger.info("Updating Application Entity Completed");
 					}
 				}
 			}
-			if (sendMail) {
-				/* Calling Mail functionality method */
-				notifyService.sendMail(changedAppCount);
-				logger.info("sendEmail = true, Calling The sendMail() Method From notifyService");
-			} else {
-				logger.error("sendEmail = false, Hence No Need Of Sending Email, Continuing Monitoring The Server");
-			}
 		} else {
 			logger.error("Currently No Application Is Running On The Server");
 		}
+		return changedAppCount;
 	}
 
 	/**
@@ -145,8 +131,6 @@ public class MonitorService {
 		logger.info("Method checkNetworkStatus Execution Starts");
 		try {
 			String cmd = "";
-			logger.info(
-					"Trying To Check The Operating System Name By Using 'if' Block And Then Based On The OS Trying To Ping By Using OS Specfic Command");
 			if (System.getProperty("os.name").startsWith("Windows")) {
 				// For Windows
 				cmd = "ping -n 1 " + ipAddr;
@@ -159,11 +143,10 @@ public class MonitorService {
 			Process myProcess = Runtime.getRuntime().exec(cmd);
 			logger.info("Executing The Command Based On OS");
 			myProcess.waitFor();
-			logger.info("checkNetworkStatus------->>myProcess.exitValue()>>>[" + myProcess.exitValue() + "]");
 			if (myProcess.exitValue() == 0) {
 				return 200;
 			} else {
-				logger.info(ipAddr + "is Offline");
+				logger.info(ipAddr + " is Offline");
 				return 404;
 			}
 		} catch (Exception e) {
@@ -174,44 +157,58 @@ public class MonitorService {
 	}
 
 	/**
-	 * To compare and update the new status of an ISP.
+	 * 
 	 */
 	public void compareISPstatus() {
-		logger.info("Method compareISPstatus Execution Starts");
-		Application app = appDao.getISP();
-		logger.info("Getting The List Of ISP's From the Database");
-		String illStatus = "";
-		if (app != null) {
-			logger.info("Checking The List Of ISP's For Null");
-			int newStatus = app.getNewStatusCode();
-			int networkStatus = app.getNewStatusCode();
-			networkStatus = checkNetworkStatus(String.valueOf(app.getApplicationURL()));
-			logger.info("Printing Network Status : " + networkStatus);
-			if (networkStatus == 200) {
-				logger.info("The network status code is " + networkStatus + "ISP is working.And Calling compareApplicationStatus method");
-				compareApplicationStatus();
-			}
-			if (newStatus != networkStatus) {
-				logger.info(
-						"Inside 'if' Block For Comparing The Status, Means If newStatus Is Not Equal To networkStatus Then Setting oldStatus As newStatus And newStatus As networkStatus To The Application Object");
-				app.setResponseGeneratedTime(new Date());
-				app.setOldStatusCode(newStatus);
-				app.setNewStatusCode(networkStatus);
-				appDao.updateEntity(app);
-				logger.info("Updating The Application Entity");
-				if (networkStatus == 200) {
-					illStatus = "UP";
-				} else {
-					illStatus = "DOWN";
+		int prevStatus;
+		int currStatus;
+		boolean illMail = false;
+		boolean appMail = false;
+		boolean appChangeMail = false;
+		int appChangeCount = 0;
+		List<ApplicationEntity> illList = appDao.getEntityList(InternetLeaseLine.class);
+		if (illList.size() > 0) {
+			Iterator<ApplicationEntity> listIterator = illList.iterator();
+			while (listIterator.hasNext()) {
+				InternetLeaseLine ill = (InternetLeaseLine) listIterator.next();
+
+				prevStatus = ill.getCurrentStatus();
+				currStatus = checkNetworkStatus(ill.getInternalIpAddress());
+				if (ill.isPrimaryIll()) {
+					if (currStatus != prevStatus) {
+						if (currStatus == 404) {
+							// appChangeCount = compareApplicationStatus();
+							illMail = true;
+							// appMail = true;
+						}
+						if (currStatus == 200) {
+							appMail = true;
+							appChangeCount = compareApplicationStatus();
+						}
+					}
+					if (currStatus == 200) {
+						appChangeCount = compareApplicationStatus();
+						if (appChangeCount > 0) {
+							appChangeMail = true;
+						}
+					}
 				}
-				/* Calling Mail functionality Method */
-				notifyService.sendISPErrorMail(illStatus);
-				logger.info("Calling sendISPErrorMail Method On notifyService Object");
+				ill.setPreviousStatus(prevStatus);
+				ill.setCurrentStatus(currStatus);
+				appDao.updateEntity(ill);
+			}
+			if (illMail) {
+				// mail only ill table
+				notifyService.sendMail(appChangeCount);
+			} else if (appMail == true || appChangeMail == true) {
+				// mail both
+				notifyService.sendMail(appChangeCount);
 			} else {
 				logger.info("Continue Monitoring The ILL");
 			}
 		} else {
-			logger.info("Currently No IIL Info Is Present In The Database !!");
+			logger.error("Currently No IIL Info Is Present In The Database !!");
 		}
+
 	}
 }

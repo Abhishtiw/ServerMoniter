@@ -4,26 +4,21 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
-<link rel="stylesheet" href="resources/css/style1.css">
+<title>AHS-Add User</title>
+<link rel="stylesheet" href="resources/css/style.css">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
 <link
 	href="${pageContext.request.contextPath}/resources/css/add_application.css"
 	rel="stylesheet" type="text/css" />
-
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/add_user.js">
-	
 </script>
-
 </head>
-
 <body>
 	 <div id="wrapper">
 		<div id="leftWrapper">
@@ -42,13 +37,15 @@
     padding-right: 5px;
     width: 215px;
     height: 60px;
-    "></a>::after</li>
+    "></a></li>
 					<li><a href="addApplication">Add Application</a></li>
 					<li><a href="addUser">Add User</a></li>
+						<li><a href="addIll">Add ILL</a></li>
 					<li><a href="displayApplication">View Applications</a></li>
 					<li><a href="displayUser">View Users</a></li>
-					<li><a href="applicationhealthstatus">Health Status Report</a></li>
-					<li><a href="signout">Sign Out</a></li>
+					<li><a href="applicationstatus">Application Status</a></li>
+					<li><a href="applicationhealthstatus">Health Status History</a></li>
+					<li><a href="signout" style="border-bottom: solid 1px rgba(0, 0, 0, 0.2);">Sign Out</a></li>
 				</ul>
 			</div>
 		</div>
@@ -65,7 +62,8 @@
 				<div id="container_body">
 					<div align="justify">
 						<h2 class="form_title">Add User</h2>
-						<p class="head_para">Enter valid details to Add User</p>
+						<label style="color: red">${UserMessage}</label>
+						<p class="head_para">Enter valid details to add User</p>
 					</div>
 				</div>
 				<!--Form  start-->
@@ -78,7 +76,7 @@
 							<tr>
 								<td align="center"><label>Name:</label></td>
 								<td><input type="text" name="userName"
-									onkeyup="checkFirstName()" onblur="validateUser()"></td>
+									onkeyup="checkFirstName()" onblur="validateUser()" autofocus></td>
 								<td><span style="color: red;" id="firstNameError"
 									class="error"> </span></td>
 							</tr>
@@ -109,10 +107,10 @@
 						<br>
 						<table style="height: 47px;" width="365">
 							<tr>
-								<td align="center"><button type="submit"
+								<td align="right"><button type="submit"
 										class="btn btn-info btn-sm" data-toggle="modal"
 										data-target="#myModal">Add</button></td>
-								<td><button type="reset" class="btn btn-danger btn-sm"
+								<td align="center"><button type="reset" class="btn btn-danger btn-sm"
 										data-toggle="modal" data-target="#myModal">Clear</button></td>
 							</tr>
 						</table>

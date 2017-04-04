@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.est.dto.ApplicationAndStatusDto;
 import com.est.entity.Application;
@@ -30,6 +31,7 @@ import com.est.entity.ApplicationEntity;
 import com.est.entity.ApplicationStatus;
 import com.est.entity.ApplicationStatusReport;
 import com.est.entity.Email;
+import com.est.entity.InternetLeaseLine;
 import com.est.entity.User;
 import com.est.service.ApplicationService;
 import com.est.service.MonitorService;
@@ -79,6 +81,7 @@ public class ApplicationController {
 	public void scheduledTaskForApps() {
 		logger.info("Start Executing scheduledTaskForApps Method");
 		monitorService.compareISPstatus();
+		// monitorService.compareIllStatus();
 	}
 
 	/**
@@ -95,6 +98,8 @@ public class ApplicationController {
 			return "add_application";
 		} else if (url.equals("addUser")) {
 			return "register_user";
+		} else if (url.equals("addIll")) {
+			return "add_ill";
 		}
 		logger.info("Completed Execution of add application Method");
 		return "errorPage";
@@ -114,9 +119,11 @@ public class ApplicationController {
 		if (result) {
 			logger.info("Completed Execution of saveApplication  Method");
 			return "redirect:displayApplication";
+		} else {
+			model.addAttribute("UserMessage", "Adding Application Failed!!!");
+			logger.error("saveApplication Method Failed");
+			return "add_application";
 		}
-		logger.error("saveApplication Method Failed");
-		throw new ServerMonitorException(ErrorCode.ADD_APPLICATION_FAIL);
 	}
 
 	/**
@@ -128,16 +135,16 @@ public class ApplicationController {
 	 */
 	@RequestMapping(value = { "saveUser", "registerMe" }, method = RequestMethod.POST)
 	public String saveUser(@ModelAttribute("user") User user, @RequestParam("mail") String mail,
-			HttpServletRequest request) {
+			HttpServletRequest request, ModelMap model) {
 		logger.info("Starts Executing saveUser Method");
 		userResult = appService.addEntity(user);// Adding User record
 		email.setEmailId(user.getEmailId());
 		if (mail.equals("to")) {
 			email.setEmailTo(1);
-		} else {
+		} else if (mail.equals("cc")) {
 			email.setEmailCc(1);
 		}
-		mailResult = appService.addEntity(email);
+		mailResult = appService.addEntity(email);// Adding Email record
 		if ((userResult == true) && (mailResult == true)) {
 			logger.info("Execution Completed Of saveapplication Method");
 			if (request.getRequestURI().equals("/servermonitor/saveUser")) {
@@ -149,67 +156,33 @@ public class ApplicationController {
 			}
 		} else if ((userResult == false) || (mailResult == false)) {
 			logger.error("Save User Or Save Email Info Fail");
-			throw new ServerMonitorException(ErrorCode.ADD_USER_WITH_EMAIL_FAIL);
+			model.addAttribute("UserMessage", "Adding User or Email Failed!!!");
+			return "register_user";
 		} else {
 			logger.error("saveUser Method Fail");
-			throw new ServerMonitorException(ErrorCode.ADD_USER_FAIL);
+			model.addAttribute("UserMessage", "Adding  User or Email Failed!!!");
+			return "register_user";
 		}
 	}
 
 	/**
-	 * To create new Application status code
+	 * To create an Ill
 	 * 
-	 * @param appStatus
+	 * @param application
+	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "saveAppStatus", method = RequestMethod.POST)
-	public String saveStatus(@ModelAttribute("appStatus") ApplicationStatus appStatus) {
-		logger.info("Start Executing saveStatus Method");
-		result = appService.addEntity(appStatus);
+	@RequestMapping(value = "saveIll", method = RequestMethod.POST)
+	public String saveIll(@ModelAttribute("ill") InternetLeaseLine ill, ModelMap model) {
+		logger.info("Starts Executing saveApplication Method");
+		result = appService.addEntity(ill);
 		if (result) {
-			logger.info("Execution Completed Of saveStatus Method");
-			return "saveapp";
+			logger.info("Completed Execution of saveIll  Method");
+			return "redirect:displayApplication";
 		} else {
-			logger.error("saveStatus Method Fail");
-			throw new ServerMonitorException(ErrorCode.ADD_STATUS_FAIL);
-		}
-	}
-
-	/**
-	 * To create new Application status report
-	 * 
-	 * @param appStatusReport
-	 * @return
-	 */
-	@RequestMapping(value = "saveAppStatusReport", method = RequestMethod.POST)
-	public String saveStatusReport(@ModelAttribute("appStatusReport") ApplicationStatusReport appStatusReport) {
-		logger.info("Start Executing saveStatusReport Method");
-		result = appService.addEntity(appStatusReport);
-		if (result) {
-			logger.info("Execution Completed Of saveStatusReport Method");
-			return "saveapp";
-		} else {
-			logger.error("saveStatusReport Method Fail");
-			throw new ServerMonitorException(ErrorCode.ADD_REPORT_FAIL);
-		}
-	}
-
-	/**
-	 * To add new email ID
-	 * 
-	 * @param email
-	 * @return
-	 */
-	@RequestMapping(value = "saveMailInfo", method = RequestMethod.POST)
-	public String saveEmailInfo(@ModelAttribute("email") Email email) {
-		logger.info("Start Executing saveEmailInfo Method");
-		result = appService.addEntity(email);
-		if (result) {
-			logger.info("Execution Completed Of saveEmailInfo Method");
-			return "saveapp";
-		} else {
-			logger.error("saveStatusReport Method Fail");
-			throw new ServerMonitorException(ErrorCode.ADD_EMAIL_FAIL);
+			logger.error("saveIll Method Failed");
+			model.addAttribute("UserMessage", "Adding ILL Failed!!!");
+			return "add_ill";
 		}
 	}
 
@@ -226,7 +199,7 @@ public class ApplicationController {
 		Application application = (Application) appService.getEntityByID(Application.class, appId);
 		if (application == null) {
 			logger.warn("editApp Method Fail");
-			throw new ServerMonitorException(ErrorCode.UPDATE_ENTITY_FAIL);
+			return "redirect:displayApplication";
 		}
 		model.addAttribute("application", application);
 		logger.info("Execution Completed Of editApp Method");
@@ -240,7 +213,7 @@ public class ApplicationController {
 	 * @return
 	 */
 	@RequestMapping(value = "update_application", method = RequestMethod.POST)
-	public String updateApp(@ModelAttribute("application") Application application) {
+	public String updateApp(@ModelAttribute("application") Application application, ModelMap model) {
 		logger.info("Start Executing updateApp Method");
 		result = appService.updateEntity(application);
 		if (result) {
@@ -248,7 +221,8 @@ public class ApplicationController {
 			return "redirect:displayApplication";
 		} else {
 			logger.error("updateApp Method Fail");
-			throw new ServerMonitorException(ErrorCode.UPDATE_ENTITY_FAIL);
+			model.addAttribute("UserMessage", "Updating Application Failed");
+			return "redirect:displayApplication";
 		}
 	}
 
@@ -263,7 +237,7 @@ public class ApplicationController {
 	public String editUser(@RequestParam int userId, ModelMap model) {
 		logger.info("Start Executing editUser Method");
 		User user = (User) appService.getEntityByID(User.class, userId);
-		model.addAttribute("user", user);
+		model.addAttribute("user",user);
 		logger.info("Execution Completed Of editUser Method");
 		return "edit_user";
 	}
@@ -276,23 +250,65 @@ public class ApplicationController {
 	 * @return
 	 */
 	@RequestMapping(value = "updateUser", method = RequestMethod.POST)
-	public String updateUser(@ModelAttribute("user") User user, @RequestParam("mailId") String mailId) {
-		logger.info("Start Executing updateUser Method.And Calling updateEntity method to update User record");
-		userResult = appService.updateEntity(user);
+	public String updateUser(@ModelAttribute("user") User user, @RequestParam("mailId") String mailId, ModelMap model) {
+		logger.info("Start Executing updateUser Method. And Calling updateEntity method to update User record");
+		userResult = appService.updateEntity(user); // Updating User
+		
+		System.err.println("**********************************************************************"+userResult);
 		logger.info("Calling getEntityBasedOnEmailId method to get Email entity");
 		email = (Email) appService.getEntityBasedOnEmailId(Email.class, mailId);
+		
+		System.err.println("**********************************************************************"+email);
 		email.setEmailId(user.getEmailId());
 		logger.info("Calling updateEntity method to update Email record");
-		mailResult = appService.updateEntity(email);
+		mailResult = appService.updateEntity(email);// Updating Email
 		if ((userResult == true) && (mailResult == true)) {
 			logger.info("Execution Completed of updateUser Method by updating both User and Email record");
 			return "redirect:displayUser";
 		} else if ((userResult == false) || (mailResult == false)) {
 			logger.error("Either Update User Or Update Email Info Failed");
-			throw new ServerMonitorException(ErrorCode.UPDATE_ENTITY_FAIL);
+			model.addAttribute("UserMessage", "Updating User or Email Failed!!!");
+			return "redirect:displayUser";
 		} else {
 			logger.warn("updateUser Method Fail");
-			throw new ServerMonitorException(ErrorCode.UPDATE_ENTITY_FAIL);
+			model.addAttribute("UserMessage", "Updating User or Email Failed!!!");
+			return "redirect:displayUser";
+		}
+	}
+
+	/**
+	 * To edit an ILL
+	 * 
+	 * @param illId
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "editIll")
+	public String editIll(@RequestParam int illId, ModelMap model) {
+		logger.info("Start Executing editIll Method");
+		InternetLeaseLine ill = (InternetLeaseLine) appService.getEntityByID(InternetLeaseLine.class, illId);
+		model.addAttribute("ill", ill);
+		logger.info("Execution Completed Of editIll Method");
+		return "edit_ill";
+	}
+
+	/**
+	 * To update an ILL
+	 * 
+	 * @param ill
+	 * @return
+	 */
+	@RequestMapping(value = "update_ill", method = RequestMethod.POST)
+	public String updateIll(@ModelAttribute("ill") InternetLeaseLine ill, ModelMap model) {
+		logger.info("Start Executing updateIll Method");
+		result = appService.updateEntity(ill);
+		if (result) {
+			logger.info("Execution Completed Of updateIll Method");
+			return "redirect:displayApplication";
+		} else {
+			logger.error("updateIll Method Fail");
+			model.addAttribute("IllMessage", "Updating ILL failed !!!");
+			return "redirect:displayApplication";
 		}
 	}
 
@@ -300,7 +316,6 @@ public class ApplicationController {
 	 * To delete an Application
 	 * 
 	 * @param appId
-	 * @param model
 	 * @return
 	 */
 	@RequestMapping("deleteApp")
@@ -312,7 +327,8 @@ public class ApplicationController {
 			return "redirect:displayApplication";
 		} else {
 			logger.warn("deleteApp Method Fail");
-			throw new ServerMonitorException(ErrorCode.DELETE_APPLICATION_FAIL);
+			model.addAttribute("UserMessage", "Deleting Application failed !!!");
+			return "redirect:displayApplication";
 		}
 	}
 
@@ -324,7 +340,7 @@ public class ApplicationController {
 	 * @return
 	 */
 	@RequestMapping("deleteUser")
-	public String deleteUser(@RequestParam int userId, @RequestParam String mailId) {
+	public String deleteUser(@RequestParam int userId, @RequestParam String mailId, ModelMap model) {
 		logger.info("Start Executing deleteUser Method");
 		userResult = appService.deleteEntity(User.class, userId);
 		mailResult = appService.deleteEmailRecord(mailId);
@@ -332,11 +348,33 @@ public class ApplicationController {
 			logger.info("Execution Completed Of deleteUser Method");
 			return "redirect:displayUser";
 		} else if ((userResult == false) || (mailResult == false)) {
-			logger.warn("Delete User Or Delete Email Info Fail");
-			throw new ServerMonitorException(ErrorCode.DELETE_ENTITY_FAIL);
+			logger.error("Delete User Or Delete Email Info Fail");
+			model.addAttribute("UserMessage", "Deleting User/E-mail failed !!!");
+			return "redirect:displayUser";
 		} else {
-			logger.warn("deleteUser Method Fail");
-			throw new ServerMonitorException(ErrorCode.DELETE_USER_FAIL);
+			logger.error("deleteUser Method Fail");
+			model.addAttribute("UserMessage", "Deleting User/E-mail failed !!!");
+			return "redirect:displayUser";
+		}
+	}
+
+	/**
+	 * To delete an Ill
+	 * 
+	 * @param illId
+	 * @return
+	 */
+	@RequestMapping("deleteIll")
+	public String deleteIll(@RequestParam int illId, ModelMap model) {
+		logger.info("Start Executing deleteIll Method");
+		result = appService.deleteEntity(InternetLeaseLine.class, illId);
+		if (result) {
+			logger.info("Execution Completed Of deleteIll Method");
+			return "redirect:displayApplication";
+		} else {
+			logger.warn("deleteIll Method Fail");
+			model.addAttribute("IllMessage", "Deleting ILL failed !!!");
+			return "redirect:displayApplication";
 		}
 	}
 
@@ -349,14 +387,29 @@ public class ApplicationController {
 	@RequestMapping(value = "displayApplication")
 	public String displayApp(ModelMap modelMap) {
 		logger.info("Start Executing displayApp Method");
-		Application ill = appService.getISP();
-		modelMap.addAttribute("ill", ill);
-		List<ApplicationAndStatusDto> application = appService.getListApplicationAndStatus();
-		if (application == null) {
-			throw new ServerMonitorException(ErrorCode.DISPLAY_ENTITY_ERROR);
+		List<ApplicationEntity> illList = appService.getEntityList(InternetLeaseLine.class);
+		if (illList != null) {
+			if (illList.isEmpty() == false) {
+				modelMap.addAttribute("illList", illList);
+			} else {
+				modelMap.addAttribute("IllMessage", "No Records Found");
+				logger.info("No ill (records) found in the database / ill table empty");
+			}
+		} else {
+			logger.error("ill List is Null");
+		}
+		List<ApplicationAndStatusDto> applicationList = appService.getListApplicationAndStatus();
+		if (applicationList != null) {
+			if (applicationList.isEmpty() == false) {
+				modelMap.addAttribute("applicationList", applicationList);
+			} else {
+				modelMap.addAttribute("UserMessage", "No Records Found");
+				logger.info("No Applications (records) found in the database / Application table empty");
+			}
+		} else {
+			logger.error("Application List is Null");
 		}
 		logger.info("Execution Completed of displayApp Method");
-		modelMap.addAttribute("applicationList", application);
 		return "display_app";
 	}
 
@@ -369,13 +422,18 @@ public class ApplicationController {
 	@RequestMapping(value = "displayUser")
 	public String displayUser(ModelMap modelMap) {
 		logger.info("Start Executing displayUser Method");
-		List<ApplicationEntity> user = appService.getEntityList(User.class);
-		if (user == null) {
-			logger.warn("displayUser Method Fail");
-			throw new ServerMonitorException(ErrorCode.DISPLAY_ENTITY_ERROR);
+		List<ApplicationEntity> userList = appService.getEntityList(User.class);
+		if (userList != null) {
+			if (userList.isEmpty() == false) {
+				modelMap.addAttribute("user", userList);
+			} else {
+				modelMap.addAttribute("UserMessage", "No Records Found");
+				logger.error("No user (records) found in the database / user table empty");
+			}
+		} else {
+			logger.error("User List is Null");
 		}
 		logger.info("Execution Completed of displayUser Method");
-		modelMap.addAttribute("user", user);
 		return "display_user";
 	}
 
@@ -391,24 +449,36 @@ public class ApplicationController {
 		List<ApplicationAndStatusDto> activeAppList = new ArrayList<ApplicationAndStatusDto>();
 		ApplicationAndStatusDto application;
 		logger.info("Getting ISP application list");
-		Application ill = appService.getISP();
-		modelMap.addAttribute("ill", ill);
-		logger.info("Getting Application List");
-		// List<ApplicationEntity> applEntityList =
-		// appService.getEntityList(Application.class);
-		List<ApplicationAndStatusDto> applEntityList = appService.getListApplicationAndStatus();
-		if (applEntityList == null) {
-			logger.warn("displayUser Method Fail");
-			throw new ServerMonitorException(ErrorCode.DISPLAY_ENTITY_ERROR);
-		}
-		Iterator<ApplicationAndStatusDto> appListIterator = applEntityList.iterator();
-		while (appListIterator.hasNext()) {
-			application = appListIterator.next();
-			if (application.isActive()) {
-				activeAppList.add(application);
+		List<ApplicationEntity> illList = appService.getEntityList(InternetLeaseLine.class);
+		if (illList != null) {
+			if (illList.isEmpty() == false) {
+				modelMap.addAttribute("illList", illList);
+			} else {
+				modelMap.addAttribute("IllMessage", "No Records Found");
+				logger.info("No ill (records) found in the database / ill table empty");
 			}
+		} else {
+			logger.error("ill List is Null");
 		}
-		modelMap.addAttribute("applicationStatus", activeAppList);
+		logger.info("Getting Application List");
+		List<ApplicationAndStatusDto> applEntityList = appService.getListApplicationAndStatus();
+		if (applEntityList != null) {
+			if (applEntityList.isEmpty() == false) {
+				Iterator<ApplicationAndStatusDto> appListIterator = applEntityList.iterator();
+				while (appListIterator.hasNext()) {
+					application = appListIterator.next();
+					if (application.isActive()) {
+						activeAppList.add(application);
+					}
+				}
+				modelMap.addAttribute("applicationStatus", activeAppList);
+			} else {
+				modelMap.addAttribute("UserMessage", "No Records Found");
+				logger.info("No Applications (records) found in the database / Application table empty");
+			}
+		} else {
+			logger.error("ApplicationAndStatusDto List is Null");
+		}
 		logger.info("Execution Completed of displayApplicationStatus Method");
 		return "status_Report";
 	}
@@ -432,7 +502,7 @@ public class ApplicationController {
 	 * @return
 	 */
 	@RequestMapping(value = "get_password", method = RequestMethod.POST)
-	public String getPassword(@RequestParam("emailId") String emailId) {
+	public String getPassword(@RequestParam("emailId") String emailId, ModelMap model) {
 		logger.info("Start Executing getPassword Method");
 		User user;
 		user = (User) appService.getEntityBasedOnEmailId(User.class, emailId);
@@ -442,7 +512,8 @@ public class ApplicationController {
 			notifyService.sendLostPassword(emailId, password);
 		} else {
 			logger.info("Incorrect Password");
-			return "redirect:/lostPassword";
+			model.addAttribute("UserMessage", "Entered E-mail doesnot match with the records in the DataBase, Please Try Again !!! ");
+			return "lost_password";
 		}
 		logger.info("Execution Completed of getPassword  Method");
 		return "emailSuccess";
@@ -480,31 +551,52 @@ public class ApplicationController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "upload", method = RequestMethod.POST)
-	public String saveAppFromExcel(@RequestParam("filepath") String filepath, @RequestParam("sheet") String sheet,
-			ModelMap model) {
+	@RequestMapping(value = "upload", headers = ("content-type=multipart/*"), method = RequestMethod.POST)
+	public String saveAppFromExcel(@RequestParam("filepath") MultipartFile filepath, ModelMap model) {
 		logger.info("Starts Executing saveAppFromExcel Method");
-		List<Application> applist = excel.excelFile(filepath, sheet);
-		Iterator<Application> iterator = applist.iterator();
+		List<ApplicationEntity> applist = excel.processExcel(filepath);
+		if (applist == null) {
+			model.addAttribute("UserMessage",  "Loading ExcelFile Failed!!!");
+			return "uploadExcel";
+		}
+		Iterator<ApplicationEntity> iterator = applist.iterator();
 		while (iterator.hasNext()) {
-			Application application = iterator.next();
+			Application application = (Application) iterator.next();
 			result = appService.addEntity(application);
 		}
 		logger.info("Execution completed of saveAppFromExcel  Method");
 		return "redirect:displayApplication";
 	}
 
+	/**
+	 * To display Application Health status.
+	 * 
+	 * @param modelMap
+	 * @return
+	 */
 	@RequestMapping("applicationhealthstatus")
 	public String appHealthStatus(ModelMap modelMap) {
 		List<ApplicationEntity> appHealthList = appService.getEntityList(ApplicationStatusReport.class);
-		if (appHealthList == null) {
-			throw new ServerMonitorException(ErrorCode.DISPLAY_ENTITY_ERROR);
+		if (appHealthList != null) {
+			if (appHealthList.isEmpty() == false) {
+				modelMap.addAttribute("applicationHealthStatusReport", appHealthList);
+			} else {
+				modelMap.addAttribute("UserMessage", "No Records Found..");
+				logger.info(
+						"No ApplicationStatusReport (records) found in the database / ApplicationStatusReport table empty");
+			}
+		} else {
+			logger.error("ApplicationStatusReport List is Null");
 		}
 		logger.info("Execution Completed of displayApp Method");
-		modelMap.addAttribute("applicationHealthStatusReport", appHealthList);
 		return "application_Health_Status_Report";
 	}
 
+	/**
+	 * To register new user
+	 * 
+	 * @return
+	 */
 	@RequestMapping(value = "signUp", method = RequestMethod.GET)
 	public String signUp() {
 		return "signup";

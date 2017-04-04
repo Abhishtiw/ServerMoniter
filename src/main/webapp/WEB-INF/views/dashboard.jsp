@@ -6,7 +6,7 @@
   
   
   
-      <link rel="stylesheet" href="resources/css/style1.css">
+      <link rel="stylesheet" href="resources/css/style.css">
 
   
 </head>

@@ -48,5 +48,4 @@ public class ApplicationStatus extends ApplicationEntity {
 	public void setStatusMessage(String statusMessage) {
 		this.statusMessage = statusMessage;
 	}
-
 }

@@ -31,7 +31,6 @@ public class ApplicationDaoImpl implements ApplicationDao {
 	private static final Logger logger = Logger.getLogger(ApplicationDaoImpl.class);
 	@Autowired
 	private SessionFactory sessionFactory;
-
 	private Session session;
 	private Transaction transaction;
 	private Query query;
@@ -44,10 +43,13 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			session = sessionFactory.openSession();
 			transaction = session.beginTransaction();
 			/* Saving appEntity to database */
-			session.save(appentity);
+			int value = (Integer) session.save(appentity);
 			transaction.commit();
 			logger.info("Record Inserted.Execution Completed addEntity Method In ApplicationDaoImpl");
-			return true;
+			if (value > 0) {
+				return true;
+			}
+			return false;
 		} catch (HibernateException e) {
 			logger.error("Record not inserted..");
 			/* Rollback all transactions,if any exception occurs */
@@ -70,7 +72,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			return true;
 		} catch (HibernateException e) {
 			logger.error("Record Not Updated");
-			/* Rollback all transactions,if any exception occurs */;
+			/* Rollback all transactions,if any exception occurs */
 			transaction.rollback();
 			throw new ServerMonitorException(ErrorCode.DB_TRANSACTION_FAILED, e);
 		} finally {
@@ -107,11 +109,12 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		try {
 			session = sessionFactory.openSession();
 			transaction = session.beginTransaction();
-			if (entityClass.getSimpleName().equals("Application")) {
-				query = session.createQuery("from Application where applicationType <> 'ill'");
-			} else if (entityClass.getSimpleName().equals("ApplicationStatusReport")) {
-				query = session.createQuery("from " + entityClass.getSimpleName() + " order by applicationId");
-			} else {
+			if (entityClass.getSimpleName().equals("ApplicationStatusReport")) {
+				query = session.createQuery("from " + entityClass.getSimpleName() + " order by id");
+			} if(entityClass.getSimpleName().equals("InternetLeaseLine")){
+				query=session.createQuery("from "+ entityClass.getSimpleName() + " order by primaryIll desc");
+			}
+			else {
 				query = session.createQuery("from " + entityClass.getSimpleName() + " order by id");
 			}
 			entityList = query.list();
@@ -173,40 +176,17 @@ public class ApplicationDaoImpl implements ApplicationDao {
 	}
 
 	@Override
-	public Application getISP() {
-		logger.info("Start Executing getISPList Method In ApplicationDaoImpl");
-		Application application = null;
-		try {
-			session = sessionFactory.openSession();
-			transaction = session.beginTransaction();
-			query = session.createQuery("from Application where applicationType = 'ill'");
-			query.setMaxResults(1);
-			application = (Application) query.uniqueResult();
-			transaction.commit();
-			logger.info("ISP Record Loaded.Execution Completed getISPList Method In ApplicationDaoImpl");
-		} catch (HibernateException e) {
-			logger.error("Failed To Load Details");
-			/* Rollback all transactions,if any exception occurs */
-			transaction.rollback();
-			throw new ServerMonitorException(ErrorCode.NO_IIL_FOUND, e);
-		} finally {
-			session.close();
-		}
-		return application;
-	}
-
-	@Override
 	public ApplicationEntity getEntityBasedOnEmailId(Class<? extends ApplicationEntity> entityClass, String emailId) {
 		logger.info("Start Executing getEntityBasedOnEmailId Method In ApplicationDaoImpl");
-		ApplicationEntity appEntity = null;
+		
 		try {
 			session = sessionFactory.openSession();
 			transaction = session.beginTransaction();
 			query = session.createQuery("from " + entityClass.getSimpleName() + " where emailId='" + emailId + "'");
 			query.setMaxResults(1);
-			appEntity = (ApplicationEntity) query.uniqueResult();
-			logger.info(
-					"ApplicationEntity Record Loaded.Execution Completed getEntityBasedOnEmailId Method In ApplicationDaoImpl");
+			ApplicationEntity  appEntity = (ApplicationEntity) query.uniqueResult();
+			
+			logger.info("ApplicationEntity Record Loaded. Execution Completed getEntityBasedOnEmailId Method In ApplicationDaoImpl");
 			return appEntity;
 		} catch (HibernateException e) {
 			logger.error("ApplicationEntity Record Not Loaded");
@@ -246,7 +226,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		}
 	}
 
-	/*
+	/**
 	 * this method will joins both the application entity and the application
 	 * status entity by using HQL
 	 */
@@ -263,23 +243,23 @@ public class ApplicationDaoImpl implements ApplicationDao {
 			ApplicationStatus status = null;
 			query = session.createQuery("from Application a, ApplicationStatus s where a.newStatusCode = s.statusCode");
 			List<Object[]> list = query.list();
-			for (Object[] obj : list) {
-				dto = new ApplicationAndStatusDto();
-				app = (Application) obj[0];
-				if (!app.getApplicationType().equals("ill")) {
+			if (list.size() > 0) {
+				for (Object[] obj : list) {
+					dto = new ApplicationAndStatusDto();
+					app = (Application) obj[0];
 					status = (ApplicationStatus) obj[1];
-					dto.setId(app.getId());
-					dto.setApplicationName(app.getApplicationName());
-					dto.setApplicationType(app.getApplicationType());
-					dto.setApplicationURL(app.getApplicationURL());
-					dto.setInternalIpAddress(app.getInternalIpAddress());
-					dto.setResponseGeneratedTime(app.getResponseGeneratedTime());
-					dto.setNewStatusCode(app.getNewStatusCode());
-					dto.setOldStatusCode(app.getOldStatusCode());
-					dto.setMessage(status.getStatusMessage());
-					dto.setActive(app.isActive());
-					appStatusList.add(dto);
-				}
+						dto.setId(app.getId());
+						dto.setApplicationName(app.getApplicationName());
+						dto.setApplicationType(app.getApplicationType());
+						dto.setApplicationURL(app.getApplicationURL());
+						dto.setInternalIpAddress(app.getInternalIpAddress());
+						dto.setResponseGeneratedTime(app.getResponseGeneratedTime());
+						dto.setNewStatusCode(app.getNewStatusCode());
+						dto.setOldStatusCode(app.getOldStatusCode());
+						dto.setMessage(status.getStatusMessage());
+						dto.setActive(app.isActive());
+						appStatusList.add(dto);
+					}
 			}
 			logger.info("Execution Completed getListApplicationAndStatus Method In ApplicationDaoImpl");
 		} catch (HibernateException e) {
@@ -297,7 +277,6 @@ public class ApplicationDaoImpl implements ApplicationDao {
 	 * getting status message from applicationStatus table by passing status
 	 * code
 	 */
-
 	public String getStatusMsg(int responseCode) {
 		logger.info("Start Executing getStatusMsg Method in ApplicationDaoImpl");
 		String statusMessage = null;

@@ -4,9 +4,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link rel="stylesheet" href="resources/css/style1.css">
+<link rel="stylesheet" href="resources/css/style.css">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>AHS-User Details</title>
 <script type='text/javascript'
 	src='http://code.jquery.com/jquery-1.10.1.js'></script>
 <link rel="stylesheet" type="text/css"
@@ -38,13 +38,15 @@
     padding-right: 5px;
     width: 215px;
     height: 60px;
-    "></a>::after</li>
+    "></a></li>
 					<li><a href="addApplication">Add Application</a></li>
 					<li><a href="addUser">Add User</a></li>
+						<li><a href="addIll">Add ILL</a></li>
 					<li><a href="displayApplication">View Applications</a></li>
 					<li><a href="displayUser">View Users</a></li>
-					<li><a href="applicationhealthstatus">Health Status Report</a></li>
-					<li><a href="signout">Sign Out</a></li>
+					<li><a href="applicationstatus">Application Status</a></li>
+					<li><a href="applicationhealthstatus">Health Status History</a></li>
+					<li><a href="signout" style="border-bottom: solid 1px rgba(0, 0, 0, 0.2);">Sign Out</a></li>
 				</ul>
 			</div>
 		</div>
@@ -57,10 +59,10 @@
 			<div class="row">
 				<div class="col-md-12">
 					<h1>User List</h1>
+					<label style="color: red">${UserMessage}</label>
 					<div class="table-responsive">
-						<table id="mytable" class="table table-bordred table-striped">
+						<table id="mytable" class="table table-hover">
 							<tr>
-								<th>Id</th>
 								<th>Name</th>
 								<th>Email</th>
 								<th>Edit</th>
@@ -68,7 +70,6 @@
 							</tr>
 							<c:forEach items="${user}" var="user">
 								<tr>
-									<td><c:out value="${user.id}" /></td>
 									<td><c:out value="${user.userName}" /></td>
 									<td><c:out value="${user.emailId}" /></td>
 									<td><a class="btn btn-primary btn-xs"

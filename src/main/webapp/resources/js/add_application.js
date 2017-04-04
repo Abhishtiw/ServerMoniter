@@ -4,7 +4,7 @@
 function validateApplication() {
 	var fv = true;
 	/*var lettersReg = /^[a-zA-Z ]*$/;*/
-	var urlReg = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+	/*var urlReg = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;*/
 	var ipReg = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
 		
 	var appName = document.appForm.applicationName.value;
@@ -32,10 +32,10 @@ function validateApplication() {
 		fv = false;
 	}
 
-	if (!url.match(urlReg)) {
+	/*if (!url.match(urlReg)) {
 		document.getElementById('urlError').innerHTML = "please enter valid URL";
 		fv = false;
-	}
+	}*/
 
 	if (ipaddress == "") {
 		document.getElementById('ipError').innerHTML = "ip Address cannot be empty";

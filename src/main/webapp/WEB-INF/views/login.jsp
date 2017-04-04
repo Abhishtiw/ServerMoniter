@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>AHS-Login</title>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script
@@ -22,19 +22,21 @@
 </head>
 <body>
 <div class="container">
-    <div class="row">
-        <div class="col-md-4 col-md-offset-7" style="margin-left: 150.828; margin-left: 380px; margin-top: 80px">
+    <div class="row" style="padding-top: 120px;">
+        <div class="col-md-4 col-md-offset-7" style="margin-left: 150.828; margin-left: 380px; margin-top: 20px">
     
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="glyphicon glyphicon-lock"></span> Login</div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" action="validateLogin" method="post">
+                    <label style="color: red">${UserMessage}</label>
+                    <br>
                     <div class="form-group">
                         <label for="nokp" class="col-sm-3 control-label">
                             Username</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="nokp" placeholder="Username" name="userName" required>
+                            <input type="text" class="form-control" id="nokp" placeholder="Username" autofocus name="userName" required>
                         </div>
                     </div>
                     <div class="form-group">

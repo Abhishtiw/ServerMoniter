@@ -5,89 +5,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
-<link rel="stylesheet" href="resources/css/style1.css">
+<title>AHS-Edit User</title>
+<!-- <link rel="stylesheet" href="resources/css/style.css"> -->
 <jsp:include page="dashboard.jsp" />
-<style>
-.error {
-	color: red;
-	font-style: italic;
-	font-size: 10px;
-}
 
-body {
-	background-image: url("../image/45.jpg");
-	font-family: Tahoma, Geneva, sans-serif;
-}
-
-#container {
-	width: 550px;
-	background-color: rgba(250, 250, 252, .9);
-	margin: auto;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	box-shadow: 0 0 3px #999;
-}
-
-#container_body {
-	padding: 10px;
-}
-
-.form_title {
-	font-size: 35px;
-	color: #141823;
-	text-align: center;
-	padding: 10px;
-	font-weight: normal;
-}
-
-.head_para {
-	font-size: 19px;
-	color: #99a2a7;
-	text-align: center;
-	font-weight: normal;
-}
-
-.firstnameorlastname {
-	margin-right: 20px;
-}
-
-.input_name {
-	width: 207px;
-	padding: 5px;
-	font-size: 18px;
-}
-
-.input_num {
-	width: 207px;
-	padding: 5px;
-	font-size: 18px;
-}
-
-.input_number {
-	width: 434px;
-	padding: 5px;
-	font-size: 18px;
-}
-
-.input_email {
-	width: 300px;
-	padding: 5px;
-	font-size: 18px;
-}
-
-.comments {
-	width: 400px;
-	padding: 5px;
-	font-size: 18px;
-	select
-	{
-	padding
-	:
-	5px;
-}
-</style>
-
+<link
+	href="${pageContext.request.contextPath}/resources/css/add_application.css"
+	rel="stylesheet" type="text/css" />
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script
@@ -95,40 +19,34 @@ body {
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript"
-	src="${pageContext.request.contextPath}/resources/js/add_excel_sheet.js"></script>
+	src="${pageContext.request.contextPath}/resources/js/add_user.js"></script>
 </head>
 <body>
-	 <div id="wrapper">
+		<div id="wrapper">
 		<div id="leftWrapper">
 			<div id="listView" class="list">
-				<ul style="padding-top: -;padding-left: 0px;">
-					<li class="list-item-active" style="height: 60px;"><a href="applicationstatus" style="padding-right: 2px;
-    padding-top: 0px;
-    padding-left: -;
-    border-bottom-width: 3px;
-    padding-bottom: 2px;
-    height: 60px;
-    padding-left: 2px;
-    padding-left: 0px;border-top-width: 0px;"><img src="resources/image/estuate.jpg" alt="logo" style="
-    padding-left: 0;
-    border-right-width: 5px;
-    padding-right: 5px;
-    width: 215px;
-    height: 60px;
-    "></a>::after</li>
+				<ul style="padding-top: -; padding-left: 0px;">
+					<li class="list-item-active" style="height: 60px;"><a
+						href="applicationstatus"
+						style="padding-right: 2px; padding-top: 0px; padding-left: -; border-bottom-width: 3px; padding-bottom: 2px; height: 60px; padding-left: 2px; padding-left: 0px; border-top-width: 0px;"><img
+							src="resources/image/estuate.jpg" alt="logo"
+							style="padding-left: 0; border-right-width: 5px; padding-right: 5px; width: 215px; height: 60px;"></a></li>
 					<li><a href="addApplication">Add Application</a></li>
 					<li><a href="addUser">Add User</a></li>
+					<li><a href="addIll">Add ILL</a></li>
 					<li><a href="displayApplication">View Applications</a></li>
 					<li><a href="displayUser">View Users</a></li>
-					<li><a href="applicationhealthstatus">Health Status Report</a></li>
-					<li><a href="signout">Sign Out</a></li>
+					<li><a href="applicationstatus">Application Status</a></li>
+					<li><a href="applicationhealthstatus">Health Status
+							History</a></li>
+					<li><a href="signout"
+						style="border-bottom: solid 1px rgba(0, 0, 0, 0.2);">Sign Out</a></li>
 				</ul>
 			</div>
 		</div>
 		<div id="rightWrapper">
-			<div id="header" style="border-bottom-width:1px; " >
-				<a id="fullPage" href="#">|||</a>
-				<label></label>
+			<div id="header" style="border-bottom-width: 1px;">
+				<a id="fullPage" href="#">|||</a> <label></label>
 			</div>
 			<br> <br> <br>
 
@@ -141,7 +59,7 @@ body {
 			</div>
 			<div align="justify">
 				<h2 class="form_title">Edit User</h2>
-				<p class="head_para">Enter valid details to Register</p>
+				<p class="head_para">Enter Valid Details to Register</p>
 			</div>
 		</div>
 		<!--Form  start-->

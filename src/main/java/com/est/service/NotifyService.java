@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -24,30 +23,24 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.servlet.ServletContext;
 import javax.mail.PasswordAuthentication;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.est.dao.ApplicationDao;
 import com.est.dto.ApplicationAndStatusDto;
-import com.est.entity.Application;
 import com.est.entity.ApplicationEntity;
 import com.est.entity.ApplicationStatusReport;
 import com.est.entity.Email;
+import com.est.entity.InternetLeaseLine;
 
 public class NotifyService {
 	@Autowired
 	private ApplicationService appService;
-
 	@Autowired
 	private ServletContext servletContext;
-	
 	@Autowired
 	ApplicationStatusReport appStatusReport;
-	
 	@Autowired
 	private ApplicationDao appDao;
-	
 	private Properties props = null;
 	private static final Logger logger = Logger.getLogger(NotifyService.class);
 
@@ -64,7 +57,8 @@ public class NotifyService {
 	}
 
 	/**
-	 * Mail sending block which contains the status of applications List.
+	 * Mail sending block which contains the status of applications List and Ill
+	 * list.
 	 */
 	public void sendMail(int changedAppCount) {
 		logger.info("Starting sendMail method in NotifyService");
@@ -78,11 +72,8 @@ public class NotifyService {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-
 		fromEmail = props.getProperty("username");
-		logger.info("Getting Username from the Properties File");
 		password = props.getProperty("password");
-		logger.info("Getting Password from the Properties File");
 		props.put("mail.smtp.host", props.getProperty("smtpHost"));
 		props.put("mail.smtp.port", props.getProperty("TLSport"));
 		props.put("mail.smtp.auth", props.getProperty("authValue"));
@@ -92,16 +83,13 @@ public class NotifyService {
 				return new PasswordAuthentication(fromEmail, password);
 			}
 		};
-
 		Session session = Session.getDefaultInstance(props, auth);
 		MimeMessage message = new MimeMessage(session);
 		try {
-
 			message.setFrom(new InternetAddress(fromEmail));
 			List<ApplicationEntity> emailList = appService.getEntityList(Email.class);
 			logger.info("Getting Email List From the Database");
 			for (ApplicationEntity entity : emailList) {
-				logger.info("Iterating Each and Every Email Object from the List of Emails");
 				Email mail = (Email) entity;
 				String emailId = mail.getEmailId();
 				int emailTo = mail.getEmailTo();
@@ -111,134 +99,215 @@ public class NotifyService {
 				} else if (emailCc == 1) {
 					message.setRecipient(Message.RecipientType.CC, new InternetAddress(emailId));
 				} else {
-					logger.info("Specify Selected User");
+					logger.info("Specify User");
 				}
 			}
 			MimeMultipart multipart = new MimeMultipart("related");
-			logger.info("Created Multipart Object");
 			BodyPart messageBodyPart = new MimeBodyPart();
-			logger.info("Created Message Bodypart Object");
 			StringBuffer email = new StringBuffer();
-			email.append("<html>\n" + "<body>\n" + "\n" + "<table>" + "<tr>" + "<th>" + "Application Name" + "</th>"
-					+ "<th>" + "Application Type" + "</th>" + "<th>" + "Application URL" + "</th>" + "<th>"
-					+ "ip_address" + "</th>" + "<th>" + "Response_Code" + "</th>" + "<th>" + "Status" + "</th>"
-					+ "</tr>");
+			email.append("<html>\n" + "<body>\n");
+			email.append(
+					"<div style=' background-color: rgba(109, 109, 109, 0.66); width:860px; height:40px;text-align:left;color:white; padding-top: 1px;'>"
+							+ "<h3>" + "Following is the Internet Leased Line Status as on: " + new Date() + "</h3>"
+							+ "</div>");
 
+			email.append(
+					"<table align='center' border='1' width='100%'style='border-collapse: collapse;background: #efefef;border: ridge #7f8486 2.0pt;'>"
+							+ "<tr style='color:rgba(48, 87, 154, 0.97);border: none; border-bottom: solid #7f8486 1.0pt;padding-bottom: 10px;padding-top: 10px;width: 58px;height: 33px; font-weight: bold;' align='left'>"
+							+ "<th>" + "Provider" + "</th>" + "<th>" + "Location" + "</th>" + "<th>" + "ip_address"
+							+ "</th>" + "<th>" + "Impact" + "</th>" + "<th>" + "Current Status" + "</th>" + "</tr>");
 			List<ApplicationAndStatusDto> appStatusList = appService.getListApplicationAndStatus();
-			logger.info("Getting List of Applications From The Database.And Iterating Each and Every Application Object From the List of Applications Objects");
-			for (ApplicationAndStatusDto appStatusDto : appStatusList) {
-				logger.info("Iterating Each and Every Application Object From the List of Applications Objects");
+			int noOfApplication = appStatusList.size();
+			List<ApplicationEntity> appList = appService.getEntityList(InternetLeaseLine.class);
+			Iterator<ApplicationEntity> iter = appList.iterator();
+			while (iter.hasNext()) {
+				logger.info("Getting ILL Details And Setting And Sending Email");
+				InternetLeaseLine illApp = (InternetLeaseLine) iter.next();
+				if (illApp.getCurrentStatus() != 200) {
+					email.append(
+							"<tr style='color:red;border: none; border-bottom: solid #7f8486 1.0pt; font-family: arial,sans-serif;'>");
+				} else {
+					email.append(
+							"<tr style ='border: none; border-bottom: solid #7f8486 1.0pt; font-family: arial,sans-serif;'>");
+				}
+				email.append("<td>" + illApp.getProviderName() + "</td>");
+				email.append("<td>" + illApp.getLocation() + "</td>");
+				email.append("<td>" + illApp.getInternalIpAddress() + "</td>");
+				email.append("<td>" + illApp.getImpact() + "</td>");
+				email.append("<td align='center'>");
+				// int toolTipMsg = illApp.getCurrentStatus();
+				if ((illApp.getCurrentStatus() >= 200) && (illApp.getCurrentStatus() <= 399)) {
+					email.append("<span title = ILL_UP >" + "<img src=\"cid:yes\" alt='up'/>" + "</span>");
+				} else {
+					email.append("<span title = ILL_DOWN >" + "<img src=\"cid:no\" alt='down'/>" + "</span>");
+				}
+				email.append("</td>");
+				
 				for (ApplicationEntity entity : emailList) {
-					logger.info("Iterating Each and Every Email Object From the List of Emails");
+					logger.info("Inserting ILL details to app_status_report");
 					String mailId = null;
 					Email emailId = (Email) entity;
 					int cc = emailId.getEmailCc();
 					int to = emailId.getEmailTo();
 					List<String> ccList = new ArrayList<String>();
 					List<String> toList = new ArrayList<String>();
-
 					if (cc == 1) {
 						mailId = emailId.getEmailId();
 						ccList.add(mailId);
-						logger.info("Adding EmailId which is in Cc-Field");
 					}
 					if (to == 1) {
 						mailId = emailId.getEmailId();
 						toList.add(mailId);
-						logger.info("Adding EmailId which is in To-Field");
 					}
+					appStatusReport.setApplicationId(illApp.getId());
+					appStatusReport.setApplicationName(illApp.getProviderName());
+					appStatusReport.setCurrentStatus(illApp.getCurrentStatus());
+					appStatusReport.setGeneratedTime(new Date());
+					int code = illApp.getCurrentStatus();
+					String msg = appDao.getStatusMsg(code);
+					appStatusReport.setMessage(msg);
 
 					if (ccList != null && !ccList.isEmpty()) {
 						for (String eId : ccList) {
-							logger.info("Iterating Email Object Which are in ccList");
 							appStatusReport.setEmailId(eId);
-							logger.info("Setting EmailId");
 							appStatusReport.setEmailTo(0);
-							logger.info("Setting To Field of Email");
 							appStatusReport.setEmailCc(1);
-							logger.info("Setting Cc Field of Email");
-							appStatusReport.setApplicationId(appStatusDto.getId());
-							logger.info("Setting ApplicationId");
-							appStatusReport.setApplicationName(appStatusDto.getApplicationName());
-							logger.info("Setting ApplicationName");
-							appStatusReport.setCurrentStatus(appStatusDto.getNewStatusCode());
-							logger.info("Setting Current Status of the Application");
-							appStatusReport.setGeneratedTime(new Date());
-							logger.info("Setting Email Generated Time");
-							int code = appStatusDto.getNewStatusCode();
-							String msg = appDao.getStatusMsg(code);
-							logger.info("Getting Status Message from the Database by Passing Response Code");
-							appStatusReport.setMessage(msg);
-							logger.info("Setting Status Message");
 						}
 					}
 					if (toList != null && !toList.isEmpty()) {
 						for (String eId : toList) {
-							logger.info("Iterating Email Object Which are in toList");
 							appStatusReport.setEmailId(eId);
-							logger.info("Setting EmailId");
 							appStatusReport.setEmailTo(1);
-							logger.info("Setting To Field of Email");
 							appStatusReport.setEmailCc(0);
-							logger.info("Setting Cc Field of Email");
-							appStatusReport.setApplicationId(appStatusDto.getId());
-							logger.info("Setting ApplicationId");
-							appStatusReport.setApplicationName(appStatusDto.getApplicationName());
-							logger.info("Setting ApplicationName");
-							appStatusReport.setCurrentStatus(appStatusDto.getNewStatusCode());
-							logger.info("Setting Current Status of the Application");
-							appStatusReport.setGeneratedTime(new Date());
-							logger.info("Setting Email Generated Time");
-							int code = appStatusDto.getNewStatusCode();
-							String msg = appDao.getStatusMsg(code);
-							logger.info("Getting Status Message from the Database by Passing Response Code");
-							appStatusReport.setMessage(msg);
-							logger.info("Setting Status Message");
+						}
+					}
+					appDao.addEntity(appStatusReport);
+					logger.info("Inserted ILL Details into app_status_report");
+				}
+				logger.info("Inserted Into Email Body Completed");
+				if (illApp.isPrimaryIll()) {
+					if (illApp.getCurrentStatus() == 200) {
+						if (changedAppCount > 0) {
+							message.setSubject(" AHS US Status -  <" + changedAppCount
+									+ "> application(s) has changed their status  [alpha test]");
+						} else {
+							message.setSubject("AHS US Status - UP[alpha test]");
+						}
 
+					} else {
+						message.setSubject(" AHS US Status - DOWN, and <" + noOfApplication
+								+ "> Applications Are Down [alpha test]");
+					}
+				}
+			}
+
+			email.append("</table>" + "</body>" + "</html>");
+			email.append("<br>");
+
+			email.append(
+					"<div style=' background-color: rgba(109, 109, 109, 0.66); width:860px; height:40px;text-align:left;color:white;padding-top: 1px;'>");
+			email.append("<h3>" + "Following is the Application Health Status as on" + new Date() + "&nbsp;"
+					+ "<a href ='https://apps.estuate.com'>Estuate Apps</a>" + "</h3>");
+			email.append("</div>");
+
+			email.append("<html>\n" + "<body>\n" + "\n"
+					+ "<table align='center' border='1' width='100%'style='border-collapse: collapse;background: #efefef;border: ridge #7f8486 2.0pt;'>"
+					+ "<tr style='color:rgba(48, 87, 154, 0.97);border: none; border-bottom: solid #7f8486 1.0pt;padding-bottom: 10px;padding-top: 10px;width: 58px;height: 33px; font-weight: bold;' align='left'>"
+					+ "<th>" + "Application Name" + "</th>" + "<th>" + "Application Type" + "</th>" + "<th>"
+					+ "ip_address" + "</th>"
+					+ "<th align='center'>" + "Current Status" + "</th>" + "</tr>"
+					+ "</thead>");
+
+			for (ApplicationAndStatusDto appStatusDto : appStatusList) {
+				logger.info("Inserting Application Record to app_status_report");
+				for (ApplicationEntity entity : emailList) {
+					String mailId = null;
+					Email emailId = (Email) entity;
+					int cc = emailId.getEmailCc();
+					int to = emailId.getEmailTo();
+					List<String> ccList = new ArrayList<String>();
+					List<String> toList = new ArrayList<String>();
+					if (cc == 1) {
+						mailId = emailId.getEmailId();
+						ccList.add(mailId);
+					}
+					if (to == 1) {
+						mailId = emailId.getEmailId();
+						toList.add(mailId);
+					}
+					appStatusReport.setApplicationId(appStatusDto.getId());
+					appStatusReport.setApplicationName(appStatusDto.getApplicationName());
+					appStatusReport.setCurrentStatus(appStatusDto.getNewStatusCode());
+					appStatusReport.setGeneratedTime(new Date());
+					int code = appStatusDto.getNewStatusCode();
+					String msg = appDao.getStatusMsg(code);
+					appStatusReport.setMessage(msg);
+					if (ccList != null && !ccList.isEmpty()) {
+						for (String eId : ccList) {
+							appStatusReport.setEmailId(eId);
+							appStatusReport.setEmailTo(0);
+							appStatusReport.setEmailCc(1);
+						}
+					}
+					if (toList != null && !toList.isEmpty()) {
+						for (String eId : toList) {
+							appStatusReport.setEmailId(eId);
+							appStatusReport.setEmailTo(1);
+							appStatusReport.setEmailCc(0);
 						}
 					}
 					appDao.addEntity(appStatusReport);
 				}
-				message.setSubject(" AHS US Status - "+changedAppCount+" application(s) has changed their status  [alpha test]");
+				logger.info("Inserting Application into app_status_report is Completed");
+
 				message.setText("status");
 
 				/* checks the application is active or not */
 				if (appStatusDto.isActive()) {
-					email.append("<tr>");
-					email.append("<td>");
-					email.append(appStatusDto.getApplicationName());
-					logger.info("Getting Application Name from the Database");
-					email.append("</td>");
 
-					email.append("<td>");
-					email.append(appStatusDto.getApplicationType());
-					logger.info("Getting Application Type from the Database");
-					email.append("</td>");
-
-					email.append("<td>");
-					email.append(appStatusDto.getApplicationURL());
-					logger.info("Getting Application URL from the Database");
-					email.append("</td>");
-
-					email.append("<td>");
-					email.append(appStatusDto.getInternalIpAddress());
-					logger.info("Getting Application IP Address from the Database");
-					email.append("</td>");
-
-					email.append("<td>");
-					email.append("<span title=" + appStatusDto.getMessage() + ">" + appStatusDto.getNewStatusCode());
-					email.append("</span>");
-					email.append("</td>");
-
-					email.append("<td>");
-					if ((appStatusDto.getNewStatusCode() >= 200) && (appStatusDto.getNewStatusCode() <= 399)) {
-						email.append("<img src=\"cid:yes\" alt='up'/>");
+					if (appStatusDto.getNewStatusCode() != 200) {
+						email.append(
+								"<tr style='color:red;border: none; border-bottom: solid #7f8486 1.0pt; font-family: arial,sans-serif;'>");
 					} else {
-						email.append("<img src=\"cid:no\" alt='down'/>");
+						email.append(
+								"<tr style='border: none; border-bottom: solid #7f8486 1.0pt; font-family: arial,sans-serif;'>");
 					}
-					email.append("</td>");
 
-					email.append("</tr>");
+					email.append("<td>" + "<a href= '" + appStatusDto.getApplicationURL() + "'>"
+							+ appStatusDto.getApplicationName() + "</a>" + "</td>");
+
+					email.append("<td>" + appStatusDto.getApplicationType() + "</td>");
+
+					email.append("<td>" + appStatusDto.getInternalIpAddress() + "</td>");
+
+					Iterator<ApplicationEntity> illIterator = appList.iterator();
+					while (illIterator.hasNext()) {
+						InternetLeaseLine illApp = (InternetLeaseLine) illIterator.next();
+						if (illApp.isPrimaryIll()) {
+							int statusCode = illApp.getCurrentStatus();
+							if (statusCode != 200) {
+								email.append("<td align='center'>");
+								email.append("<span title=" + appStatusDto.getMessage() + ">"
+										+ "<img src=\"cid:no\" alt='down'/>" + "</span>");
+								email.append("</td>");
+							} else {
+								email.append("<td align='center'>");
+								if ((appStatusDto.getNewStatusCode() >= 200)
+										&& (appStatusDto.getNewStatusCode() <= 399)) {
+									email.append("<span title=" + appStatusDto.getMessage() + ">"
+											+ "<img src=\"cid:yes\" alt='up'/>" + "</span>");
+								} else {
+									email.append("<span title=" + appStatusDto.getMessage() + ">"
+											+ "<img src=\"cid:no\" alt='down'/>" + "</span>");
+								}
+								email.append("</td>");
+
+							}
+							break;
+						}
+						
+					}
+
 				}
 			}
 			email.append("</table>" + "</body>" + "</html>");
@@ -272,145 +341,6 @@ public class NotifyService {
 	}
 
 	/**
-	 * Mail sending block which contains the status of ISP List
-	 */
-	public void sendISPErrorMail(String illStatus) {
-		final String fromEmail;
-		final String password;
-		logger.info("method sendISPErrormail (ISP mail sending block) Execution started");
-
-		try {
-			loadProperties();
-			logger.info("Loading Properties File Successful");
-
-		} catch (FileNotFoundException ex) {
-			logger.error("Properties File Not Found");
-			System.out.println(ex);
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-
-		fromEmail = props.getProperty("username");
-		logger.info("Getting username From the Properties File");
-		password = props.getProperty("password");
-		logger.info("Getting Password From the Properties File");
-		props.put("mail.smtp.host", props.getProperty("smtpHost"));
-		props.put("mail.smtp.port", props.getProperty("TLSport"));
-		props.put("mail.smtp.auth", props.getProperty("authValue"));
-		props.put("mail.smtp.starttls.enable", props.getProperty("TLSvalue"));
-		Authenticator auth = new Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(fromEmail, password);
-			}
-		};
-
-		// fetching to system admin address from the database
-		Session session = Session.getDefaultInstance(props, auth);
-		MimeMessage message = new MimeMessage(session);
-		try {
-			message.setFrom(new InternetAddress(fromEmail));
-			List<ApplicationEntity> emailList = appService.getEntityList(Email.class);
-			logger.info("Getting Email List From the Database");
-			Iterator<ApplicationEntity> it = emailList.iterator();
-			while (it.hasNext()) {
-				logger.info("Iterating Each and Every Email object from the List of Emails");
-				Email mail = (Email) it.next();
-				String emailId = mail.getEmailId();
-				int emailTo = mail.getEmailTo();
-				int emailCc = mail.getEmailCc();
-				if (emailTo == 1) {
-					message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailId));
-				} else if (emailCc == 1) {
-					message.setRecipient(Message.RecipientType.CC, new InternetAddress(emailId));
-				} else {
-					logger.info("Specify Selected User");
-				}
-			}
-				// message.setRecipient(Message.RecipientType.CC, new
-				// InternetAddress(emailId));
-				message.setSubject("AHS US ILL Status - "+illStatus+"  [alpha test]");
-
-				MimeMultipart multipart = new MimeMultipart("related");
-				logger.info("Created MimeMultiPart Object");
-				BodyPart messageBodyPart = new MimeBodyPart();
-				logger.info("Created MimeBodyPart Object");
-				StringBuffer email = new StringBuffer();
-
-				email.append("<html>\n" + "<body>\n");
-				email.append("Status change in the Internet service provider");
-				email.append("<html>\n" + "<body>\n" + "\n" + "<table >" + "<tr>" + "<th>" + "Application Name"
-						+ "</th>" + "<th>" + "Application Type" + "</th>" + "<th>" + "Application URL" + "</th>"
-						+ "<th>" + "ip_address" + "</th>" + "<th>" + "Response_Code" + "</th>" + "<th>" + "Status"
-						+ "</th>" + "</tr>");
-				Application application = appService.getISP();
-				logger.info("Getting ISP list From the Database");
-				email.append("<tr>");
-				email.append("<td>");
-				email.append(application.getApplicationName());
-				logger.info("Getting ISP Name From the Database");
-				email.append("</td>");
-
-				email.append("<td>");
-				email.append(application.getApplicationType());
-				logger.info("Getting ISP Type From the Database");
-				email.append("</td>");
-
-				email.append("<td>");
-				email.append(application.getApplicationURL());
-				logger.info("Getting ISP URL From the Database");
-				email.append("</td>");
-
-				email.append("<td>");
-				email.append(application.getInternalIpAddress());
-				logger.info("Getting ISP IPAddress From the Database");
-				email.append("</td>");
-
-				email.append("<td>");
-				email.append(application.getNewStatusCode());
-				logger.info("Getting ISP Status code From the Database");
-				email.append("</td>");
-
-				email.append("<td>");
-				if ((application.getNewStatusCode() >= 200) && (application.getNewStatusCode() <= 399)) {
-					email.append("<img src=\"cid:yes\" alt='up'/>");
-				} else {
-					email.append("<img src=\"cid:no\" alt='down'/>");
-				}
-				email.append("</td>");
-
-				email.append("<tr>");
-				email.append("</body>" + "</html>");
-				messageBodyPart.setContent(email.toString(), "text/html");
-				multipart.addBodyPart(messageBodyPart);
-
-				// second part (the image)
-				BodyPart yesPart = new MimeBodyPart();
-				DataSource fds = new FileDataSource(servletContext.getRealPath("resources/image/up.png"));
-
-				yesPart.setDataHandler(new DataHandler(fds));
-				yesPart.setHeader("Content-ID", "<yes>");
-
-				BodyPart noPart = new MimeBodyPart();
-				DataSource fds2 = new FileDataSource(servletContext.getRealPath("resources/image/down.png"));
-
-				noPart.setDataHandler(new DataHandler(fds2));
-				noPart.setHeader("Content-ID", "<no>");
-
-				// add image to the multipart
-				multipart.addBodyPart(yesPart);
-				multipart.addBodyPart(noPart);
-
-				// put everything together
-				message.setContent(multipart);
-				Transport.send(message);
-				logger.info("Email sent successfully");
-			} catch (MessagingException e) {
-				logger.error("Failure in sending Email due to ", e);
-				e.printStackTrace();
-			}
-	}
-
-	/**
 	 * Mail sending block which sends the Password
 	 */
 	public void sendLostPassword(String emailId, String pwd) {
@@ -420,8 +350,6 @@ public class NotifyService {
 
 		try {
 			loadProperties();
-			logger.info("loading properties file successfull");
-
 		} catch (FileNotFoundException ex) {
 			logger.info("Properties File Not Found " + ex);
 		} catch (IOException ex) {
@@ -429,9 +357,7 @@ public class NotifyService {
 		}
 
 		fromEmail = props.getProperty("username");
-		logger.info("Getting Username From the Properties File");
 		password = props.getProperty("password");
-		logger.info("Getting Password From the Properties File");
 		props.put("mail.smtp.host", props.getProperty("smtpHost"));
 		props.put("mail.smtp.port", props.getProperty("TLSport"));
 		props.put("mail.smtp.auth", props.getProperty("authValue"));
@@ -444,14 +370,13 @@ public class NotifyService {
 
 		Session session = Session.getDefaultInstance(props, auth);
 		MimeMessage message = new MimeMessage(session);
-		logger.info("Created MimeMessage Object");
 		try {
 			message.setFrom(new InternetAddress(fromEmail));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailId));
-			logger.info("Mail Check");
 
 			message.setSubject("AHS User Password");
-			message.setText(" Dear User, \n\n \t Your AHS Password is : " + pwd + "\n\n\t Kindly go through this link http://localhost:8080/servermonitor/ for login");
+			message.setText(" Dear User, \n\n \t Your AHS Password is : " + pwd
+					+ "\n\n\t Kindly go through this link http://localhost:8080/servermonitor/ for login");
 
 			Transport.send(message);
 			logger.info("Email sent Successfully");
@@ -461,5 +386,4 @@ public class NotifyService {
 		}
 	}
 
-	
 }
